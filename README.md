@@ -1,83 +1,106 @@
-Copy# Jungle Adventure Marathon Registration
+Copy<div align="center">
+  
+# 🌿 Jungle Adventure Marathon Registration 🏃‍♂️
 
-## Overview
-A cutting-edge web application designed to streamline the registration process for our thrilling jungle-themed marathon event. This platform combines immersive design with seamless functionality, offering participants an engaging registration experience that mirrors the adventure that awaits them.
+<img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=30&duration=2500&pause=1000&color=4AF626&center=true&vCenter=true&repeat=true&width=435&lines=Welcome+to+the+Jungle!;Ready+for+Adventure%3F;Join+the+Race+Today!" alt="Typing SVG" />
 
-## Features
+[Live Demo](your-demo-link) • [Report Bug](issues-link) • [Request Feature](feature-request-link)
+</div>
 
-### 🎨 Immersive UI/UX
-- Stunning jungle-themed interface with dynamic visual elements
-- Responsive design that adapts seamlessly across devices
-- Intuitive navigation with progress tracking
+<div align="center">
+  
+[![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://reactjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
+[![Vite](https://img.shields.io/badge/Vite-B73BFE?style=for-the-badge&logo=vite&logoColor=FFD62E)](https://vitejs.dev/)
+</div>
 
-### 📝 Smart Registration Process
-- Multi-step form with intelligent data validation
-- Progressive information capture across three strategic stages:
-  1. Personal Information
-  2. Category Selection
-  3. Secure Payment Processing
+<div align="center">
+  
+<img src="https://github.com/Shubham2582/marathon-registration/blob/main/src/images/Firefly.png" width="600" alt="Project Banner">
 
-### 🏃‍♂️ Race Categories
-- Full Marathon (42.2 KM)
-- Half Marathon (21.1 KM)
-- Fun Run (10 KM)
-- Trail Adventure (5 KM)
+</div>
 
-### 💡 Technical Highlights
-- Built with React + TypeScript for robust type safety
-- State management using React Context
-- Tailwind CSS for modern, responsive styling
-- Form validation and error handling
-- Secure payment integration
+## 🌟 Features
 
-## Technologies Used
-- React 18
-- TypeScript
-- Tailwind CSS
-- Vite
-- Lucide Icons
-- shadcn/ui Components
+<div align="center">
 
-## Getting Started
+```ascii
+┌────────────────────┐       ┌────────────────────┐      ┌────────────────────┐
+│                    │       │                    │      │                    │
+│  Personal Info     │ ───→  │  Race Category     │ ───→ │  Payment           │
+│                    │       │                    │      │                    │
+└────────────────────┘       └────────────────────┘      └────────────────────┘
+</div>
+🎨 Immersive UI/UX
+<table>
+  <tr>
+    <td align="center">
+      <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Paintbrush.png" width="25" /><br/>
+      Jungle Theme
+    </td>
+    <td align="center">
+      <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Mobile%20Phone.png" width="25" /><br/>
+      Responsive
+    </td>
+    <td align="center">
+      <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/High%20Voltage.png" width="25" /><br/>
+      Dynamic
+    </td>
+  </tr>
+</table>
+🏃‍♂️ Race Categories
+<div align="center">
+CategoryDistanceTrail Type🏆 Full Marathon42.2 KMAdvanced🥈 Half Marathon21.1 KMIntermediate🎽 Fun Run10 KMBeginner🌲 Trail Adventure5 KMFamily-Friendly
+</div>
+⚡ Quick Start
+bashCopy# Clone this repository
+git clone https://github.com/Shubham2582/marathon-registration.git
 
-### Prerequisites
-```bash
-Node.js (v14 or higher)
-npm/yarn
-Installation
+# Go into the repository
+cd marathon-registration
 
-Clone the repository
-
-bashCopygit clone https://github.com/Shubham2582/marathon-registration.git
-
-Install dependencies
-
-bashCopycd marathon-registration
+# Install dependencies
 npm install
 
-Start the development server
+# Run the app
+npm run dev
+🌳 Project Structure
+asciiCopymarathon-registration/
+├── src/
+│   ├── components/      🧩 UI Components
+│   ├── contexts/        🔄 React Contexts
+│   ├── data/           📊 Static Data
+│   ├── hooks/          🎣 Custom Hooks
+│   ├── styles/         💅 Global Styles
+│   └── utils/          🛠️ Utilities
+└── public/
+    └── images/         🖼️ Static Assets
+🎮 Features in Action
+<div align="center">
+FeatureDescription<img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Memo.png" width="20" /> Smart FormsIntelligent form validation and error handling<img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Credit%20Card.png" width="20" /> Secure PaymentsMultiple payment options with encryption<img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Chart%20Increasing.png" width="20" /> Progress TrackingReal-time registration progress tracking
+</div>
+🛠️ Built With
+<div align="center">
+TechnologyPurpose⚛️ ReactFrontend Framework📘 TypeScriptType Safety🎨 Tailwind CSSStyling⚡ ViteBuild Tool🔷 shadcn/uiUI Components
+</div>
+🤝 Contributing
+<div align="center">
+asciiCopy    🌟
+   ╱│╲
+  ╱ │ ╲
+ ╱  │  ╲
+╱   │   ╲
+▔▔▔▔▔▔▔▔▔
+  Submit
+   PR!
+</div>
+Contributions are what make the open-source community amazing. Any contributions you make are greatly appreciated.
+📝 License
+Distributed under the MIT License. See LICENSE for more information.
 
-bashCopynpm run dev
-Environment Setup
-Create a .env file in the root directory:
-envCopyVITE_APP_TITLE=Jungle Adventure Marathon
-Project Structure
-Copysrc/
-  ├── components/     # React components
-  ├── contexts/      # React contexts
-  ├── data/          # Static data and constants
-  ├── hooks/         # Custom React hooks
-  ├── styles/        # Global styles
-  └── utils/         # Utility functions
-Contributing
-Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
-License
-MIT
-Acknowledgments
-
-Design inspiration from modern SaaS platforms
-Icons provided by Lucide Icons
-UI components from shadcn/ui
-
-
-Created with 💚 by Shubham | © 2024 Jungle Adventure Marathon
+<div align="center">
+Created with 💚 by Shubham
+<img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Animals/Paw%20Prints.png" width="50" alt="paw-prints" />
+</div>
+```
