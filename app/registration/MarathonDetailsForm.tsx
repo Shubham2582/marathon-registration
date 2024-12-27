@@ -1,15 +1,23 @@
-import React from 'react'
-import { Card, CardContent } from '@/components/ui/card'
-import { ChevronRight, ChevronLeft } from 'lucide-react'
+import React from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { ChevronRight, ChevronLeft } from "lucide-react";
+import { RegistrationForm } from "@/types/form";
 
 interface MarathonDetailsFormProps {
-  formData: any
-  handleChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void
-  nextStep: () => void
-  prevStep: () => void
+  formData: RegistrationForm;
+  handleChange: (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+  ) => void;
+  nextStep: () => void;
+  prevStep: () => void;
 }
 
-const MarathonDetailsForm: React.FC<MarathonDetailsFormProps> = ({ formData, handleChange, nextStep, prevStep }) => {
+const MarathonDetailsForm: React.FC<MarathonDetailsFormProps> = ({
+  formData,
+  handleChange,
+  nextStep,
+  prevStep,
+}) => {
   return (
     <Card className="bg-gray-900/50 backdrop-blur-xl border-gray-800 rounded-3xl overflow-hidden">
       <CardContent className="p-8">
@@ -17,13 +25,17 @@ const MarathonDetailsForm: React.FC<MarathonDetailsFormProps> = ({ formData, han
           <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
             Marathon Details
           </h1>
-          <p className="text-gray-400 mt-2">Tell us about your race preferences</p>
+          <p className="text-gray-400 mt-2">
+            Tell us about your race preferences
+          </p>
         </div>
 
         <form className="space-y-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
-              <label className="text-sm text-gray-400">Race Category<span className="text-purple-500">*</span></label>
+              <label className="text-sm text-gray-400">
+                Race Category<span className="text-purple-500">*</span>
+              </label>
               <select
                 name="raceCategory"
                 value={formData.raceCategory}
@@ -39,7 +51,9 @@ const MarathonDetailsForm: React.FC<MarathonDetailsFormProps> = ({ formData, han
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm text-gray-400">T-Shirt Size<span className="text-purple-500">*</span></label>
+              <label className="text-sm text-gray-400">
+                T-Shirt Size<span className="text-purple-500">*</span>
+              </label>
               <select
                 name="tShirtSize"
                 value={formData.tShirtSize}
@@ -58,7 +72,9 @@ const MarathonDetailsForm: React.FC<MarathonDetailsFormProps> = ({ formData, han
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
-              <label className="text-sm text-gray-400">Emergency Contact Name<span className="text-purple-500">*</span></label>
+              <label className="text-sm text-gray-400">
+                Emergency Contact Name<span className="text-purple-500">*</span>
+              </label>
               <input
                 type="text"
                 name="emergencyContactName"
@@ -70,7 +86,10 @@ const MarathonDetailsForm: React.FC<MarathonDetailsFormProps> = ({ formData, han
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm text-gray-400">Emergency Contact Number<span className="text-purple-500">*</span></label>
+              <label className="text-sm text-gray-400">
+                Emergency Contact Number
+                <span className="text-purple-500">*</span>
+              </label>
               <input
                 type="tel"
                 name="emergencyContactNumber"
@@ -103,8 +122,7 @@ const MarathonDetailsForm: React.FC<MarathonDetailsFormProps> = ({ formData, han
         </form>
       </CardContent>
     </Card>
-  )
-}
+  );
+};
 
-export default MarathonDetailsForm
-
+export default MarathonDetailsForm;

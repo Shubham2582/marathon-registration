@@ -1,15 +1,23 @@
-import React from 'react'
-import { Card, CardContent } from '@/components/ui/card'
-import { ChevronLeft } from 'lucide-react'
+import React from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { ChevronLeft } from "lucide-react";
+import { RegistrationForm } from "@/types/form";
 
 interface PaymentFormProps {
-  formData: any
-  handleChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void
-  prevStep: () => void
-  handleSubmit: (e: React.FormEvent) => Promise<void>
+  formData: RegistrationForm;
+  handleChange: (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+  ) => void;
+  prevStep: () => void;
+  handleSubmit: (e: React.FormEvent) => Promise<void>;
 }
 
-const PaymentForm: React.FC<PaymentFormProps> = ({ formData, handleChange, prevStep, handleSubmit }) => {
+const PaymentForm: React.FC<PaymentFormProps> = ({
+  formData,
+  handleChange,
+  prevStep,
+  handleSubmit,
+}) => {
   return (
     <Card className="bg-gray-900/50 backdrop-blur-xl border-gray-800 rounded-3xl overflow-hidden">
       <CardContent className="p-8">
@@ -22,14 +30,16 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ formData, handleChange, prevS
 
         <form onSubmit={handleSubmit} className="space-y-8">
           <div className="space-y-2">
-            <label className="text-sm text-gray-400">Payment Method<span className="text-purple-500">*</span></label>
+            <label className="text-sm text-gray-400">
+              Payment Method<span className="text-purple-500">*</span>
+            </label>
             <div className="flex space-x-4">
               <label className="flex items-center space-x-2 cursor-pointer">
                 <input
                   type="radio"
                   name="paymentMethod"
                   value="card"
-                  checked={formData.paymentMethod === 'card'}
+                  checked={formData.paymentMethod === "card"}
                   onChange={handleChange}
                   className="form-radio text-purple-500 focus:ring-purple-500/20"
                   required
@@ -41,7 +51,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ formData, handleChange, prevS
                   type="radio"
                   name="paymentMethod"
                   value="upi"
-                  checked={formData.paymentMethod === 'upi'}
+                  checked={formData.paymentMethod === "upi"}
                   onChange={handleChange}
                   className="form-radio text-purple-500 focus:ring-purple-500/20"
                   required
@@ -53,7 +63,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ formData, handleChange, prevS
                   type="radio"
                   name="paymentMethod"
                   value="netbanking"
-                  checked={formData.paymentMethod === 'netbanking'}
+                  checked={formData.paymentMethod === "netbanking"}
                   onChange={handleChange}
                   className="form-radio text-purple-500 focus:ring-purple-500/20"
                   required
@@ -63,10 +73,12 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ formData, handleChange, prevS
             </div>
           </div>
 
-          {formData.paymentMethod === 'card' && (
+          {formData.paymentMethod === "card" && (
             <>
               <div className="space-y-2">
-                <label className="text-sm text-gray-400">Card Number<span className="text-purple-500">*</span></label>
+                <label className="text-sm text-gray-400">
+                  Card Number<span className="text-purple-500">*</span>
+                </label>
                 <input
                   type="text"
                   name="cardNumber"
@@ -79,7 +91,9 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ formData, handleChange, prevS
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm text-gray-400">Cardholder Name<span className="text-purple-500">*</span></label>
+                <label className="text-sm text-gray-400">
+                  Cardholder Name<span className="text-purple-500">*</span>
+                </label>
                 <input
                   type="text"
                   name="cardName"
@@ -93,11 +107,15 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ formData, handleChange, prevS
 
               <div className="grid grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <label className="text-sm text-gray-400">Expiry Date<span className="text-purple-500">*</span></label>
+                  <label className="text-sm text-gray-400">
+                    Expiry Date<span className="text-purple-500">*</span>
+                  </label>
                   <input
                     type="text"
                     name="expiryDate"
-                    value={formData.expiryDate}
+                    value={
+                      formData.expiryDate ? formData.expiryDate.toString() : ""
+                    }
                     onChange={handleChange}
                     className="w-full px-4 py-3 rounded-xl bg-gray-800/50 border border-gray-700 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all text-white placeholder-gray-500"
                     placeholder="MM/YY"
@@ -106,11 +124,13 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ formData, handleChange, prevS
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-sm text-gray-400">CVV<span className="text-purple-500">*</span></label>
+                  <label className="text-sm text-gray-400">
+                    CVV<span className="text-purple-500">*</span>
+                  </label>
                   <input
                     type="text"
                     name="cvv"
-                    value={formData.cvv}
+                    value={formData.cvv || ""}
                     onChange={handleChange}
                     className="w-full px-4 py-3 rounded-xl bg-gray-800/50 border border-gray-700 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all text-white placeholder-gray-500"
                     placeholder="123"
@@ -121,9 +141,11 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ formData, handleChange, prevS
             </>
           )}
 
-          {formData.paymentMethod === 'upi' && (
+          {formData.paymentMethod === "upi" && (
             <div className="space-y-2">
-              <label className="text-sm text-gray-400">UPI ID<span className="text-purple-500">*</span></label>
+              <label className="text-sm text-gray-400">
+                UPI ID<span className="text-purple-500">*</span>
+              </label>
               <input
                 type="text"
                 name="upiId"
@@ -136,10 +158,12 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ formData, handleChange, prevS
             </div>
           )}
 
-          {formData.paymentMethod === 'netbanking' && (
+          {formData.paymentMethod === "netbanking" && (
             <>
               <div className="space-y-2">
-                <label className="text-sm text-gray-400">Bank Name<span className="text-purple-500">*</span></label>
+                <label className="text-sm text-gray-400">
+                  Bank Name<span className="text-purple-500">*</span>
+                </label>
                 <input
                   type="text"
                   name="bankName"
@@ -152,7 +176,9 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ formData, handleChange, prevS
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm text-gray-400">Account Number<span className="text-purple-500">*</span></label>
+                <label className="text-sm text-gray-400">
+                  Account Number<span className="text-purple-500">*</span>
+                </label>
                 <input
                   type="text"
                   name="accountNumber"
@@ -165,7 +191,9 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ formData, handleChange, prevS
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm text-gray-400">IFSC Code<span className="text-purple-500">*</span></label>
+                <label className="text-sm text-gray-400">
+                  IFSC Code<span className="text-purple-500">*</span>
+                </label>
                 <input
                   type="text"
                   name="ifscCode"
@@ -198,8 +226,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ formData, handleChange, prevS
         </form>
       </CardContent>
     </Card>
-  )
-}
+  );
+};
 
-export default PaymentForm
-
+export default PaymentForm;
