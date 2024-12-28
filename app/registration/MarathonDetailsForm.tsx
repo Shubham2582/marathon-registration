@@ -1,5 +1,4 @@
 import { ChevronRight, ChevronLeft } from "lucide-react";
-import { useRegistrationStore } from "@/store/useRegistration";
 import { RenderField } from "@/components/render-field";
 
 interface MarathonDetailsFormProps {
@@ -11,7 +10,6 @@ const MarathonDetailsForm: React.FC<MarathonDetailsFormProps> = ({
   nextStep,
   prevStep,
 }) => {
-  const { form: formData, handleChange } = useRegistrationStore();
 
   return (
     <form className="space-y-8">

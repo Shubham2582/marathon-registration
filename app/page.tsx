@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import PersonalInformationForm from "./registration/PersonalInformationForm";
@@ -12,8 +12,8 @@ import { useRegistrationStore } from "@/store/useRegistration";
 
 const RegistrationPage = () => {
   const router = useRouter();
-  const { form, resetForm } = useRegistrationStore();
-  const [step, setStep] = useState(2);
+  const { form } = useRegistrationStore();
+  const [step, setStep] = useState(1);
 
   const nextStep = () => {
     if (validateStep()) {
@@ -150,12 +150,6 @@ const RegistrationPage = () => {
         return <PersonalInformationForm nextStep={nextStep} />;
     }
   };
-
-  useEffect(() => {
-    // Reset form state when component mounts
-    setStep(3);
-    resetForm();
-  }, []);
 
   return (
     <div className="relative">

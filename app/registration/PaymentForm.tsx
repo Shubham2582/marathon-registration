@@ -1,7 +1,5 @@
 import React from "react";
-import { Card, CardContent } from "@/components/ui/card";
 import { ChevronLeft } from "lucide-react";
-import { RegistrationForm } from "@/types/form";
 import { useRegistrationStore } from "@/store/useRegistration";
 import { RenderField } from "@/components/render-field";
 
