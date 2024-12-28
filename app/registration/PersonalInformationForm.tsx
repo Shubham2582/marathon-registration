@@ -3,88 +3,51 @@
 import React from "react";
 import { ChevronRight } from "lucide-react";
 import { BambooFrame } from "@/components/ui/bamboo-frame";
-import { RegistrationForm } from "@/types/form";
+import { useRegistrationStore } from "@/store/useRegistration";
+import { RenderField } from "@/components/render-field";
 
 interface PersonalInformationFormProps {
-  formData: RegistrationForm;
-  handleChange: (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
-  ) => void;
   nextStep: () => void;
 }
 
 const PersonalInformationForm: React.FC<PersonalInformationFormProps> = ({
-  formData,
-  handleChange,
   nextStep,
 }) => {
-  const renderField = (
-    label: string,
-    name: string,
-    type: string,
-    placeholder: string,
-    options?: string[],
-  ) => {
-    const commonClasses =
-      "w-full bg-[#1A1A1A]/60 rounded-lg px-3 py-1.5 text-white text-sm placeholder-gray-300 focus:outline-none focus:ring-1 focus:ring-[#4CAF50] border border-gray-700";
-
-    return (
-      <div className="space-y-1">
-        <label className="block text-white text-sm font-medium">{label}*</label>
-        {type === "select" ? (
-          <select
-            name={name}
-            value={formData[name as keyof RegistrationForm]!.toString() || ""}
-            onChange={handleChange}
-            className={commonClasses}
-          >
-            <option value="">{placeholder}</option>
-            {options?.map((option) => (
-              <option key={option} value={option}>
-                {option}
-              </option>
-            ))}
-          </select>
-        ) : (
-          <input
-            type={type}
-            name={name}
-            value={formData[name as keyof RegistrationForm]?.toString() || ""}
-            onChange={handleChange}
-            placeholder={placeholder}
-            className={commonClasses}
-          />
-        )}
-      </div>
-    );
-  };
+  const { form, handleChange } = useRegistrationStore();
 
   return (
     <BambooFrame>
-      <div className="text-center mb-8">
-        {" "}
-        <h1 className="text-3xl font-bold text-[#4CAF50]">
-          Personal Information
-        </h1>
-        <p className="text-gray-300 mt-2">Tell us about yourself</p>
-      </div>
-
-      <div className="grid grid-cols-2 gap-6 mb-8">
-        {renderField(
-          "First Name",
-          "firstName",
-          "text",
-          "Enter your first name",
-        )}{" "}
-        {renderField("Last Name", "lastName", "text", "Enter your last name")}
-        {renderField("Email", "email", "email", "Enter your email")}
-        {renderField(
-          "Mobile Number",
-          "mobile",
-          "tel",
-          "Enter your mobile number",
-        )}
-        {renderField("Date of Birth", "dateOfBirth", "date", "")}
+      <div className="grid grid-cols-2 gap-y-2 gap-x-5">
+        <RenderField
+          label="First Name"
+          name="firstName"
+          type="text"
+          placeholder="Enter your first name"
+        />
+        <RenderField
+          label="Last Name"
+          name="lastName"
+          type="text"
+          placeholder="Enter your last name"
+        />
+        <RenderField
+          label="Email"
+          name="email"
+          type="email"
+          placeholder="Enter your email"
+        />
+        <RenderField
+          label="Mobile Number"
+          name="mobile"
+          type="tel"
+          placeholder="Enter your mobile number"
+        />
+        <RenderField
+          label="Date of Birth"
+          name="dateOfBirth"
+          type="date"
+          placeholder=""
+        />
         <div className="space-y-1">
           <label className="block text-white text-sm font-medium">
             Gender*
@@ -94,8 +57,8 @@ const PersonalInformationForm: React.FC<PersonalInformationFormProps> = ({
               <input
                 type="radio"
                 name="gender"
-                value="male"
-                checked={formData.gender === "MALE"}
+                value="MALE"
+                checked={form.gender === "MALE"}
                 onChange={handleChange}
                 className="mr-2 text-[#4CAF50] focus:ring-[#4CAF50]"
               />{" "}
@@ -106,8 +69,8 @@ const PersonalInformationForm: React.FC<PersonalInformationFormProps> = ({
               <input
                 type="radio"
                 name="gender"
-                value="female"
-                checked={formData.gender === "FEMALE"}
+                value="FEMALE"
+                checked={form.gender === "FEMALE"}
                 onChange={handleChange}
                 className="mr-2 text-[#4CAF50] focus:ring-[#4CAF50]"
               />
@@ -115,40 +78,44 @@ const PersonalInformationForm: React.FC<PersonalInformationFormProps> = ({
             </label>
           </div>
         </div>
-        {renderField("Country", "country", "select", "Select Country", [
-          "USA",
-          "UK",
-          "Canada",
-          "Australia",
-          "India",
-        ])}
-        {renderField("State", "state", "select", "Select State", [
-          "California",
-          "New York",
-          "Texas",
-        ])}
-        {renderField("City", "city", "select", "Select City", [
-          "Los Angeles",
-          "San Francisco",
-          "New York",
-        ])}
-        {renderField(
-          "Running Club",
-          "runningClub",
-          "text",
-          "Enter running club name (optional)",
-        )}
-        {renderField(
-          "Occupation",
-          "occupation",
-          "select",
-          "Select Occupation",
-          ["Student", "Professional", "Self-Employed"],
-        )}
+        <RenderField
+          label="Country"
+          name="country"
+          type="select"
+          placeholder="Select Country"
+          options={["USA", "UK", "Canada", "Australia", "India"]}
+        />
+        <RenderField
+          label="State"
+          name="state"
+          type="select"
+          placeholder="Select State"
+          options={["California", "New York", "Texas"]}
+        />
+        <RenderField
+          label="City"
+          name="city"
+          type="select"
+          placeholder="Select City"
+          options={["Los Angeles", "San Francisco", "New York"]}
+        />
+        <RenderField
+          label="Running Club"
+          name="runningClub"
+          type="text"
+          placeholder="Enter running club name (optional)"
+        />
+        <RenderField
+          label="Occupation"
+          name="occupation"
+          type="select"
+          placeholder="Select Occupation"
+          options={["Student", "Professional", "Self-Employed"]}
+        />
       </div>
 
       <div className="flex justify-between items-center">
-        <p className="text-white/90 text-sm">
+        <p className="text-white text-sm">
           Join the ultimate adventure in wilderness running
         </p>
         <button

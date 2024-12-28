@@ -1,16 +1,16 @@
-'use client'
+"use client";
 
-import { useRouter } from 'next/navigation'
-import Image from 'next/image'
-import { CheckCircle } from 'lucide-react'
-import { BambooFrame } from '@/components/ui/bamboo-frame'
+import { useRouter } from "next/navigation";
+import Image from "next/image";
+import { CheckCircle } from "lucide-react";
+import { BambooFrame } from "@/components/ui/bamboo-frame";
 
 export default function RegistrationSuccess() {
-  const router = useRouter()
+  const router = useRouter();
 
   const handleReturnHome = () => {
-    router.push('/registration')
-  }
+    router.push("/");
+  };
 
   return (
     <div className="min-h-screen relative">
@@ -21,7 +21,7 @@ export default function RegistrationSuccess() {
         className="object-cover"
         priority
       />
-      
+
       <div className="relative min-h-screen flex items-center justify-center">
         <BambooFrame className="max-w-lg">
           <div className="text-center">
@@ -30,9 +30,10 @@ export default function RegistrationSuccess() {
               Registration Successful!
             </h1>
             <p className="text-gray-300 mb-8">
-              Thank you for registering for the Jungle Adventure Racing. We look forward to seeing you at the event!
+              Thank you for registering for the Jungle Adventure Racing. We look
+              forward to seeing you at the event!
             </p>
-            <button 
+            <button
               onClick={handleReturnHome}
               className="px-8 py-3 bg-[#4CAF50] text-white font-medium rounded-lg hover:bg-[#45A049] transition-colors"
             >
@@ -42,6 +43,5 @@ export default function RegistrationSuccess() {
         </BambooFrame>
       </div>
     </div>
-  )
+  );
 }
-

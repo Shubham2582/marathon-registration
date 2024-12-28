@@ -12,7 +12,7 @@ export interface RegistrationForm {
   runningClub: string;
   occupation: string;
 
-  paymentMethod: string;
+  paymentMethod: "UPI" | "NETBANKING" | "CARD";
 
   // --- CARD PAYMENT ---
   cardNumber: string;

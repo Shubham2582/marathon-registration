@@ -1,101 +1,213 @@
+"use client";
+
+import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
+import PersonalInformationForm from "./registration/PersonalInformationForm";
+import MarathonDetailsForm from "./registration/MarathonDetailsForm";
+import PaymentForm from "./registration/PaymentForm";
+import { toast } from "react-hot-toast";
+import { supabase } from "@/lib/supabase";
+import { useRegistrationStore } from "@/store/useRegistration";
 
-export default function Home() {
+const RegistrationPage = () => {
+  const router = useRouter();
+  const { form, resetForm } = useRegistrationStore();
+  const [step, setStep] = useState(2);
+
+  const nextStep = () => {
+    if (validateStep()) {
+      setStep(step + 1);
+    }
+  };
+  const prevStep = () => setStep(step - 1);
+
+  const validateStep = () => {
+    switch (step) {
+      case 1:
+        if (
+          !form.firstName ||
+          !form.lastName ||
+          !form.email ||
+          !form.mobile ||
+          !form.gender ||
+          !form.dateOfBirth ||
+          !form.country ||
+          !form.state ||
+          !form.city
+        ) {
+          toast.error("Please fill in all required fields");
+          return false;
+        }
+        break;
+      case 2:
+        if (
+          !form.raceCategory ||
+          !form.tShirtSize ||
+          !form.emergencyContactName ||
+          !form.emergencyContactNumber
+        ) {
+          toast.error("Please fill in all required fields");
+          return false;
+        }
+        break;
+      case 3:
+        if (!form.paymentMethod) {
+          toast.error("Please select a payment method");
+          return false;
+        }
+        if (
+          form.paymentMethod === "CARD" &&
+          (!form.cardNumber || !form.cardName || !form.expiryDate || !form.cvv)
+        ) {
+          toast.error("Please fill in all card details");
+          return false;
+        }
+        if (form.paymentMethod === "UPI" && !form.upiId) {
+          toast.error("Please enter UPI ID");
+          return false;
+        }
+        if (
+          form.paymentMethod === "NETBANKING" &&
+          (!form.bankName || !form.accountNumber || !form.ifscCode)
+        ) {
+          toast.error("Please fill in all netbanking details");
+          return false;
+        }
+        break;
+    }
+    return true;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!validateStep()) return;
+
+    try {
+      const { data, error } = await supabase
+        .from("registrations")
+        .insert([
+          {
+            personal_info: {
+              firstName: form.firstName,
+              lastName: form.lastName,
+              email: form.email,
+              mobile: form.mobile,
+              gender: form.gender,
+              dateOfBirth: form.dateOfBirth,
+              country: form.country,
+              state: form.state,
+              city: form.city,
+              runningClub: form.runningClub,
+              occupation: form.occupation,
+            },
+            marathon_details: {
+              raceCategory: form.raceCategory,
+              tShirtSize: form.tShirtSize,
+              emergencyContactName: form.emergencyContactName,
+              emergencyContactNumber: form.emergencyContactNumber,
+            },
+            payment_info: {
+              paymentMethod: form.paymentMethod,
+              transactionDetails:
+                form.paymentMethod === "CARD"
+                  ? "Card payment"
+                  : form.paymentMethod === "UPI"
+                  ? "UPI payment"
+                  : "Net banking payment",
+            },
+          },
+        ])
+        .select();
+
+      if (error) {
+        console.error("Supabase error:", error);
+        throw new Error(error.message);
+      }
+
+      console.log("Registration data:", data);
+      toast.success("Registration successful!");
+      router.push("/success");
+    } catch (error) {
+      console.error("Error submitting registration:", error);
+      toast.error(
+        `Failed to submit registration: ${
+          error instanceof Error ? error.message : "Unknown error"
+        }`
+      );
+    }
+  };
+
+  const renderStep = () => {
+    switch (step) {
+      case 1:
+        return <PersonalInformationForm nextStep={nextStep} />;
+      case 2:
+        return <MarathonDetailsForm nextStep={nextStep} prevStep={prevStep} />;
+      case 3:
+        return <PaymentForm prevStep={prevStep} handleSubmit={handleSubmit} />;
+      default:
+        return <PersonalInformationForm nextStep={nextStep} />;
+    }
+  };
+
+  useEffect(() => {
+    // Reset form state when component mounts
+    setStep(3);
+    resetForm();
+  }, []);
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+    <div className="relative">
+      <Image
+        src="/Firefly.png"
+        alt="Jungle Background"
+        fill
+        className="w-full object-cover
+        "
+        priority
+      />
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+      <div className="relative min-h-screen flex flex-col items-center justify-center py-12 px-4">
+        <div className="w-full max-w-2xl mx-auto mt-10 space-y-5 p-2">
+          <div className="flex justify-between p-4 w-full rounded-xl bg-gray-900/50 backdrop-blur">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="flex items-center">
+                <div
+                  className={`w-10 h-10 rounded-full ${
+                    step >= i ? "bg-[#4CAF50]" : "bg-gray-600"
+                  } flex items-center justify-center`}
+                >
+                  <span className="text-lg font-semibold text-white">{i}</span>
+                </div>
+                <div className="ml-4">
+                  <p
+                    className={`${
+                      step >= i ? "text-[#4CAF50]" : "text-gray-400"
+                    } font-bold`}
+                  >
+                    Step {i}
+                  </p>
+                  <p className="text-sm text-gray-300">
+                    {i === 1
+                      ? "Personal Details"
+                      : i === 2
+                      ? "Race Details"
+                      : "Payment"}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="relative">
+            <div className="absolute inset-0 bg-[url('/bamboo-frame.png')] bg-contain bg-no-repeat" />
+            <div className="relative z-10">{renderStep()}</div>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+      </div>
     </div>
   );
-}
+};
+
+export default RegistrationPage;
