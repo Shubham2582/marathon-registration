@@ -11,6 +11,7 @@ export interface RegistrationForm {
   city: string;
   runningClub: string;
   occupation: string;
+  pincode: string;
 
   paymentMethod: "UPI" | "NETBANKING" | "CARD";
 

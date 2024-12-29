@@ -11,6 +11,8 @@ interface RenderFieldProps {
   required?: boolean;
   validateInput?: (value: string) => boolean;
   errorMessage?: string;
+  disabled?: boolean;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void | Promise<void>;
 }
 
 export const RenderField: React.FC<RenderFieldProps> = ({
@@ -22,6 +24,8 @@ export const RenderField: React.FC<RenderFieldProps> = ({
   required = true,
   validateInput,
   errorMessage = "This field is required",
+  disabled = false,
+  onChange,
 }) => {
   const { form: formData, handleChange } = useRegistrationStore();
   const [showError, setShowError] = useState(false);
@@ -37,9 +41,13 @@ export const RenderField: React.FC<RenderFieldProps> = ({
     };
   }, []);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleInputChange = async (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setShowError(false);
-    handleChange(e);
+    if (onChange) {
+      await onChange(e);
+    } else {
+      handleChange(e);
+    }
   };
 
   const value = formData[name]?.toString() || "";
@@ -62,7 +70,8 @@ export const RenderField: React.FC<RenderFieldProps> = ({
             name={name}
             value={value}
             onChange={handleInputChange}
-            className={`${commonClasses} ${showFieldError ? "border-red-500" : ""}`}
+            disabled={disabled}
+            className={`${commonClasses} ${showFieldError ? "border-red-500" : ""} ${disabled ? "bg-gray-700/50 cursor-not-allowed" : ""}`}
             onBlur={() => setShowError(true)}
           >
             <option value="">{placeholder}</option>
@@ -82,7 +91,8 @@ export const RenderField: React.FC<RenderFieldProps> = ({
             value={value}
             onChange={handleInputChange}
             placeholder={placeholder}
-            className={`${commonClasses} ${showFieldError ? "border-red-500" : ""}`}
+            disabled={disabled}
+            className={`${commonClasses} ${showFieldError ? "border-red-500" : ""} ${disabled ? "bg-gray-700/50 cursor-not-allowed" : ""}`}
             onBlur={() => setShowError(true)}
           />
           {showFieldError && <p className="text-red-500 text-xs mt-1">{value && validateInput ? errorMessage : "This field is required"}</p>}
