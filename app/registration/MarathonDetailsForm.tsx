@@ -6,13 +6,18 @@ interface MarathonDetailsFormProps {
   prevStep: () => void;
 }
 
-const MarathonDetailsForm: React.FC<MarathonDetailsFormProps> = ({
-  nextStep,
-  prevStep,
-}) => {
+const MarathonDetailsForm: React.FC<MarathonDetailsFormProps> = ({ nextStep, prevStep }) => {
+  const validateMobile = (mobile: string) => {
+    return /^[6-9]\d{9}$/.test(mobile);
+  };
+
+  const handleNextStep = (e: React.MouseEvent) => {
+    e.preventDefault(); // Add this to prevent form submission
+    nextStep();
+  };
 
   return (
-    <form className="space-y-8">
+    <form className="space-y-8" onSubmit={(e) => e.preventDefault()}>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="space-y-2">
           <RenderField
@@ -25,23 +30,13 @@ const MarathonDetailsForm: React.FC<MarathonDetailsFormProps> = ({
         </div>
 
         <div className="space-y-2">
-          <RenderField
-            label="T-Shirt Size"
-            name="tShirtSize"
-            type="select"
-            placeholder="Select Size"
-            options={["S", "M", "L", "XL", "XXL"]}
-          />
+          <RenderField label="T-Shirt Size" name="tShirtSize" type="select" placeholder="Select Size" options={["S", "M", "L", "XL", "XXL"]} />
         </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="space-y-2">
-          <RenderField
-            label="Emergency Contact Name"
-            name="emergencyContactName"
-            placeholder="Enter emergency contact name"
-          />
+          <RenderField label="Emergency Contact Name" name="emergencyContactName" placeholder="Enter emergency contact name" />
         </div>
 
         <div className="space-y-2">
@@ -50,6 +45,8 @@ const MarathonDetailsForm: React.FC<MarathonDetailsFormProps> = ({
             name="emergencyContactNumber"
             type="tel"
             placeholder="Enter emergency contact number"
+            validateInput={validateMobile}
+            errorMessage="Please enter a valid 10-digit mobile number"
           />
         </div>
       </div>
@@ -64,7 +61,8 @@ const MarathonDetailsForm: React.FC<MarathonDetailsFormProps> = ({
           <span>Back</span>
         </button>
         <button
-          onClick={nextStep}
+          type="button"
+          onClick={handleNextStep}
           className="px-6 py-2 h-fit bg-[#4CAF50] text-white text-sm rounded-lg hover:bg-[#45A049] transition-colors flex items-center gap-2"
         >
           Next Step

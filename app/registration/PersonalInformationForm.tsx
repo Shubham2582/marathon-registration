@@ -22,6 +22,10 @@ const PersonalInformationForm: React.FC<PersonalInformationFormProps> = ({ nextS
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   };
 
+  const validateMobile = (mobile: string) => {
+    return /^[6-9]\d{9}$/.test(mobile);
+  };
+
   return (
     <BambooFrame>
       <div className="grid grid-cols-2 gap-y-2 gap-x-5">
@@ -35,7 +39,14 @@ const PersonalInformationForm: React.FC<PersonalInformationFormProps> = ({ nextS
           validateInput={validateEmail}
           errorMessage="Please enter a valid email address"
         />
-        <RenderField label="Mobile Number" name="mobile" type="tel" placeholder="Enter your mobile number" />
+        <RenderField
+          label="Mobile Number"
+          name="mobile"
+          type="tel"
+          placeholder="Enter your mobile number"
+          validateInput={validateMobile}
+          errorMessage="Please enter a valid 10-digit mobile number"
+        />
         <RenderField label="Date of Birth" name="dateOfBirth" type="date" placeholder="" />
         <div className="space-y-1">
           <label className="block text-white text-sm font-medium">Gender*</label>

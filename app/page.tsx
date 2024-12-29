@@ -16,11 +16,13 @@ const RegistrationPage = () => {
   const [step, setStep] = useState(1);
 
   const nextStep = () => {
-    const inputs = document.querySelectorAll("input, select");
-    inputs.forEach((input) => {
-      const event = new FocusEvent("blur");
-      input.dispatchEvent(event);
-    });
+    // First set showError to true for all RenderField components
+    const setAllFieldsToShowError = () => {
+      const event = new CustomEvent("showAllErrors");
+      document.dispatchEvent(event);
+    };
+
+    setAllFieldsToShowError();
 
     if (validateStep()) {
       setStep(step + 1);
@@ -32,6 +34,11 @@ const RegistrationPage = () => {
   const isValidEmail = (email: string): boolean => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
+  };
+
+  const isValidMobile = (mobile: string): boolean => {
+    const mobileRegex = /^[6-9]\d{9}$/; // Indian mobile number format
+    return mobileRegex.test(mobile);
   };
 
   const validateStep = () => {
@@ -56,10 +63,18 @@ const RegistrationPage = () => {
           toast.error("Please enter a valid email address");
           return false;
         }
+        if (!isValidMobile(form.mobile)) {
+          toast.error("Please enter a valid 10-digit mobile number");
+          return false;
+        }
         break;
       case 2:
         if (!form.raceCategory || !form.tShirtSize || !form.emergencyContactName || !form.emergencyContactNumber) {
           toast.error("Please fill in all required fields");
+          return false;
+        }
+        if (!isValidMobile(form.emergencyContactNumber)) {
+          toast.error("Please enter a valid emergency contact number");
           return false;
         }
         break;
@@ -136,6 +151,10 @@ const RegistrationPage = () => {
   };
 
   const renderStep = () => {
+    // Remove the default case and ensure step stays within bounds
+    if (step < 1) setStep(1);
+    if (step > 3) setStep(3);
+
     switch (step) {
       case 1:
         return <PersonalInformationForm nextStep={nextStep} />;
@@ -144,6 +163,7 @@ const RegistrationPage = () => {
       case 3:
         return <PaymentForm prevStep={prevStep} handleSubmit={handleSubmit} />;
       default:
+        // Instead of returning to step 1, stay on current step
         return null;
     }
   };

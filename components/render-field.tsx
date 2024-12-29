@@ -1,6 +1,6 @@
+import React, { useState, useEffect } from "react";
 import { useRegistrationStore } from "@/store/useRegistration";
 import { RegistrationForm } from "@/types/form";
-import { useState } from "react";
 
 interface RenderFieldProps {
   label: string;
@@ -25,6 +25,17 @@ export const RenderField: React.FC<RenderFieldProps> = ({
 }) => {
   const { form: formData, handleChange } = useRegistrationStore();
   const [showError, setShowError] = useState(false);
+
+  useEffect(() => {
+    const handleShowAllErrors = () => {
+      setShowError(true);
+    };
+
+    document.addEventListener("showAllErrors", handleShowAllErrors);
+    return () => {
+      document.removeEventListener("showAllErrors", handleShowAllErrors);
+    };
+  }, []);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setShowError(false);
