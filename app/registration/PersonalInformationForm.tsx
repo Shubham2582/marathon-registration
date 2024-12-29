@@ -62,7 +62,7 @@ const PersonalInformationForm: React.FC<PersonalInformationFormProps> = ({ nextS
     <BambooFrame>
       <div className="grid grid-cols-2 gap-y-2 gap-x-5">
         <RenderField
-          label="First Name"
+          label="First Name / पहला नाम"
           name="firstName"
           type="text"
           placeholder="Enter your first name"
@@ -70,7 +70,7 @@ const PersonalInformationForm: React.FC<PersonalInformationFormProps> = ({ nextS
           errorMessage="Please enter a valid name (letters only)"
         />
         <RenderField
-          label="Last Name"
+          label="Last Name / अंतिम नाम"
           name="lastName"
           type="text"
           placeholder="Enter your last name"
@@ -78,7 +78,7 @@ const PersonalInformationForm: React.FC<PersonalInformationFormProps> = ({ nextS
           errorMessage="Please enter a valid name (letters only)"
         />
         <RenderField
-          label="Email"
+          label="Email / ईमेल"
           name="email"
           type="email"
           placeholder="Enter your email"
@@ -86,16 +86,16 @@ const PersonalInformationForm: React.FC<PersonalInformationFormProps> = ({ nextS
           errorMessage="Please enter a valid email address"
         />
         <RenderField
-          label="Mobile Number"
+          label="Mobile Number / मोबाइल नंबर"
           name="mobile"
           type="tel"
           placeholder="Enter your mobile number"
           validateInput={validateMobile}
           errorMessage="Please enter a valid 10-digit mobile number"
         />
-        <RenderField label="Date of Birth" name="dateOfBirth" type="date" placeholder="" />
+        <RenderField label="Date of Birth / जन्म तिथि" name="dateOfBirth" type="date" placeholder="" />
         <div className="space-y-1">
-          <label className="block text-white text-sm font-medium">Gender*</label>
+          <label className="block text-white text-sm font-medium">Gender* / लिंग</label>
           <div className="flex gap-4">
             <label className="flex items-center">
               <input
@@ -106,7 +106,7 @@ const PersonalInformationForm: React.FC<PersonalInformationFormProps> = ({ nextS
                 onChange={handleChange}
                 className="mr-2 text-[#4CAF50] focus:ring-[#4CAF50]"
               />{" "}
-              <span className="text-white text-sm">Male</span>{" "}
+              <span className="text-white text-sm">Male / पुरुष</span>{" "}
             </label>{" "}
             <label className="flex items-center">
               {" "}
@@ -118,13 +118,13 @@ const PersonalInformationForm: React.FC<PersonalInformationFormProps> = ({ nextS
                 onChange={handleChange}
                 className="mr-2 text-[#4CAF50] focus:ring-[#4CAF50]"
               />
-              <span className="text-white text-sm">Female</span>
+              <span className="text-white text-sm">Female / महिला</span>
             </label>
           </div>
         </div>
-        <RenderField label="Country" name="country" type="select" placeholder="Select Country" options={getCountries()} />
+        <RenderField label="Country / देश" name="country" type="select" placeholder="Select Country" options={getCountries()} />
         <RenderField
-          label="Postal Code"
+          label="Postal Code / डाक कोड"
           name="pincode"
           type="text"
           placeholder={`Enter your ${formData.country === "India" ? "pincode" : "postal code"}`}
@@ -134,16 +134,28 @@ const PersonalInformationForm: React.FC<PersonalInformationFormProps> = ({ nextS
         />
         {formData.country === "India" ? (
           <>
-            <RenderField label="State" name="state" type="text" placeholder={isLoadingAddress ? "Loading..." : "State will be auto-filled"} disabled={true} />
-            <RenderField label="City" name="city" type="text" placeholder={isLoadingAddress ? "Loading..." : "City will be auto-filled"} disabled={true} />
+            <RenderField
+              label="State / राज्य"
+              name="state"
+              type="text"
+              placeholder={isLoadingAddress ? "Loading..." : "State will be auto-filled"}
+              disabled={true}
+            />
+            <RenderField
+              label="City / शहर"
+              name="city"
+              type="text"
+              placeholder={isLoadingAddress ? "Loading..." : "City will be auto-filled"}
+              disabled={true}
+            />
           </>
         ) : (
           <>
-            <RenderField label="State/Province" name="state" type="text" placeholder="Enter your state/province" />
-            <RenderField label="City" name="city" type="text" placeholder="Enter your city" />
+            <RenderField label="State/Province / राज्य/प्रांत" name="state" type="text" placeholder="Enter your state/province" />
+            <RenderField label="City / शहर" name="city" type="text" placeholder="Enter your city" />
           </>
         )}
-        <RenderField label="Occupation" name="occupation" type="select" placeholder="Select Occupation" options={occupations} />
+        <RenderField label="Occupation / पेशा" name="occupation" type="select" placeholder="Select Occupation" options={occupations} />
       </div>
 
       <div className="flex justify-between items-center">

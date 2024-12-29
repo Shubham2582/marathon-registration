@@ -22,7 +22,7 @@ const MarathonDetailsForm: React.FC<MarathonDetailsFormProps> = ({ nextStep, pre
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="space-y-2">
           <RenderField
-            label="Race Category"
+            label="Race Category / दौड़ श्रेणी"
             name="raceCategory"
             type="select"
             placeholder="Select Category"
@@ -31,14 +31,20 @@ const MarathonDetailsForm: React.FC<MarathonDetailsFormProps> = ({ nextStep, pre
         </div>
 
         <div className="space-y-2">
-          <RenderField label="T-Shirt Size" name="tShirtSize" type="select" placeholder="Select Size" options={["S", "M", "L", "XL", "XXL"]} />
+          <RenderField
+            label="T-Shirt Size / टी-शर्ट का आकार"
+            name="tShirtSize"
+            type="select"
+            placeholder="Select Size"
+            options={["S", "M", "L", "XL", "XXL"]}
+          />
         </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="space-y-2">
           <RenderField
-            label="Emergency Contact Name"
+            label="Emergency Contact Name / आपातकालीन संपर्क नाम"
             name="emergencyContactName"
             placeholder="Enter emergency contact name"
             validateInput={validateName}
@@ -48,7 +54,7 @@ const MarathonDetailsForm: React.FC<MarathonDetailsFormProps> = ({ nextStep, pre
 
         <div className="space-y-2">
           <RenderField
-            label="Emergency Contact Number"
+            label="Emergency Contact Number / आपातकालीन संपर्क नंबर"
             name="emergencyContactNumber"
             type="tel"
             placeholder="Enter emergency contact number"
