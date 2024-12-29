@@ -6,16 +6,10 @@ interface RenderFieldProps {
   name: keyof RegistrationForm;
   type?: string;
   placeholder: string;
-  options?: string[];
+  options?: readonly string[] | string[];
 }
 
-export const RenderField: React.FC<RenderFieldProps> = ({
-  label,
-  name,
-  type = "text",
-  placeholder,
-  options,
-}) => {
+export const RenderField: React.FC<RenderFieldProps> = ({ label, name, type = "text", placeholder, options }) => {
   const { form: formData, handleChange } = useRegistrationStore();
 
   const commonClasses =
@@ -23,16 +17,9 @@ export const RenderField: React.FC<RenderFieldProps> = ({
 
   return (
     <div>
-      <label className="block text-white text-sm font-medium mb-1">
-        {label}*
-      </label>
+      <label className="block text-white text-sm font-medium mb-1">{label}*</label>
       {type === "select" ? (
-        <select
-          name={name}
-          value={formData[name as keyof RegistrationForm]!.toString() || ""}
-          onChange={handleChange}
-          className={commonClasses}
-        >
+        <select name={name} value={formData[name as keyof RegistrationForm]!.toString() || ""} onChange={handleChange} className={commonClasses}>
           <option value="">{placeholder}</option>
           {options?.map((option) => (
             <option key={option} value={option}>
