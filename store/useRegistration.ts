@@ -9,6 +9,7 @@ const defaultFormState: RegistrationForm = {
   gender: "MALE",
   dateOfBirth: null,
   country: "",
+  pincode: "",
   state: "",
   city: "",
   occupation: "",

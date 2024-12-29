@@ -10,6 +10,7 @@ import { fetchAddressFromPincode } from "@/services/pincodeService";
 import { toast } from "react-hot-toast";
 import { getCountries } from "@/src/data/locations";
 import { validateName } from "@/utils/validation";
+import { validatePostalCode, getPostalCodeFormat } from "@/utils/postalCodes";
 
 interface PersonalInformationFormProps {
   nextStep: () => void;
@@ -31,27 +32,29 @@ const PersonalInformationForm: React.FC<PersonalInformationFormProps> = ({ nextS
     handleChange(e);
     const pincode = e.target.value;
 
-    // Clear only state and city when pincode is cleared or invalid
-    if (pincode.length !== 6) {
+    if (!pincode) {
       setForm("state", "");
       setForm("city", "");
       return;
     }
 
-    setIsLoadingAddress(true);
-    try {
-      const addressData = await fetchAddressFromPincode(pincode);
-      if (addressData) {
-        // Only set state and city, not country
-        setForm("state", addressData.State);
-        setForm("city", addressData.District);
+    // Only fetch address for Indian pincodes
+    if (formData.country === "India" && pincode.length === 6) {
+      setIsLoadingAddress(true);
+      try {
+        const addressData = await fetchAddressFromPincode(pincode);
+        if (addressData) {
+          setForm("state", addressData.State);
+          setForm("city", addressData.District);
+          toast.success("Address details fetched successfully!");
+        }
+      } catch (error) {
+        toast.error(error instanceof Error ? error.message : "Failed to fetch address");
+        setForm("state", "");
+        setForm("city", "");
+      } finally {
+        setIsLoadingAddress(false);
       }
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Failed to fetch address");
-      setForm("state", "");
-      setForm("city", "");
-    } finally {
-      setIsLoadingAddress(false);
     }
   };
 
@@ -121,16 +124,25 @@ const PersonalInformationForm: React.FC<PersonalInformationFormProps> = ({ nextS
         </div>
         <RenderField label="Country" name="country" type="select" placeholder="Select Country" options={getCountries()} />
         <RenderField
-          label="Pincode"
+          label="Postal Code"
           name="pincode"
           type="text"
-          placeholder="Enter your pincode"
-          validateInput={(value) => /^\d{6}$/.test(value)}
-          errorMessage="Please enter a valid 6-digit pincode"
+          placeholder={`Enter your ${formData.country === "India" ? "pincode" : "postal code"}`}
+          validateInput={(value) => validatePostalCode(value, formData.country)}
+          errorMessage={`Please enter a valid ${formData.country === "India" ? "pincode" : "postal code"} (${getPostalCodeFormat(formData.country)})`}
           onChange={handlePincodeChange}
         />
-        <RenderField label="State" name="state" type="text" placeholder={isLoadingAddress ? "Loading..." : "State will be auto-filled"} disabled={true} />
-        <RenderField label="City" name="city" type="text" placeholder={isLoadingAddress ? "Loading..." : "City will be auto-filled"} disabled={true} />
+        {formData.country === "India" ? (
+          <>
+            <RenderField label="State" name="state" type="text" placeholder={isLoadingAddress ? "Loading..." : "State will be auto-filled"} disabled={true} />
+            <RenderField label="City" name="city" type="text" placeholder={isLoadingAddress ? "Loading..." : "City will be auto-filled"} disabled={true} />
+          </>
+        ) : (
+          <>
+            <RenderField label="State/Province" name="state" type="text" placeholder="Enter your state/province" />
+            <RenderField label="City" name="city" type="text" placeholder="Enter your city" />
+          </>
+        )}
         <RenderField label="Occupation" name="occupation" type="select" placeholder="Select Occupation" options={occupations} />
       </div>
 
