@@ -1,5 +1,6 @@
 import { useRegistrationStore } from "@/store/useRegistration";
 import { RegistrationForm } from "@/types/form";
+import { useState } from "react";
 
 interface RenderFieldProps {
   label: string;
@@ -7,35 +8,74 @@ interface RenderFieldProps {
   type?: string;
   placeholder: string;
   options?: readonly string[] | string[];
+  required?: boolean;
+  validateInput?: (value: string) => boolean;
+  errorMessage?: string;
 }
 
-export const RenderField: React.FC<RenderFieldProps> = ({ label, name, type = "text", placeholder, options }) => {
+export const RenderField: React.FC<RenderFieldProps> = ({
+  label,
+  name,
+  type = "text",
+  placeholder,
+  options,
+  required = true,
+  validateInput,
+  errorMessage = "This field is required",
+}) => {
   const { form: formData, handleChange } = useRegistrationStore();
+  const [showError, setShowError] = useState(false);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    setShowError(false);
+    handleChange(e);
+  };
+
+  const value = formData[name]?.toString() || "";
+  const isFieldEmpty = required && !value;
+  const isFieldInvalid = isFieldEmpty || (value && validateInput && !validateInput(value));
+  const showFieldError = showError && isFieldInvalid;
 
   const commonClasses =
     "w-full bg-gray-900/50 backdrop-blur-2xl rounded-lg px-3 py-2 text-white text-sm placeholder-gray-300 focus:outline-none focus:ring-1 focus:ring-[#4CAF50] border border-gray-700";
 
   return (
     <div>
-      <label className="block text-white text-sm font-medium mb-1">{label}*</label>
+      <label className="block text-white text-sm font-medium mb-1">
+        {label}
+        {required && "*"}
+      </label>
       {type === "select" ? (
-        <select name={name} value={formData[name as keyof RegistrationForm]!.toString() || ""} onChange={handleChange} className={commonClasses}>
-          <option value="">{placeholder}</option>
-          {options?.map((option) => (
-            <option key={option} value={option}>
-              {option}
-            </option>
-          ))}
-        </select>
+        <div>
+          <select
+            name={name}
+            value={value}
+            onChange={handleInputChange}
+            className={`${commonClasses} ${showFieldError ? "border-red-500" : ""}`}
+            onBlur={() => setShowError(true)}
+          >
+            <option value="">{placeholder}</option>
+            {options?.map((option) => (
+              <option key={option} value={option}>
+                {option}
+              </option>
+            ))}
+          </select>
+          {showFieldError && <p className="text-red-500 text-xs mt-1">{value && validateInput ? errorMessage : "This field is required"}</p>}
+        </div>
       ) : (
-        <input
-          type={type}
-          name={name}
-          value={formData[name as keyof RegistrationForm]?.toString() || ""}
-          onChange={handleChange}
-          placeholder={placeholder}
-          className={commonClasses}
-        />
+        <div>
+          <input
+            type={type}
+            name={name}
+            value={value}
+            onChange={handleInputChange}
+            placeholder={placeholder}
+            className={`${commonClasses} ${showFieldError ? "border-red-500" : ""}`}
+            onBlur={() => setShowError(true)}
+          />
+          {showFieldError && <p className="text-red-500 text-xs mt-1">{value && validateInput ? errorMessage : "This field is required"}</p>}
+        </div>
       )}
     </div>
   );

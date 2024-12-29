@@ -15,16 +15,26 @@ interface PersonalInformationFormProps {
 const PersonalInformationForm: React.FC<PersonalInformationFormProps> = ({ nextStep }) => {
   const { form: formData, handleChange } = useRegistrationStore();
 
-  // Get available states and cities based on current selections
   const states = getStates(formData.country);
   const cities = getCities(formData.state);
+
+  const validateEmail = (email: string) => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  };
 
   return (
     <BambooFrame>
       <div className="grid grid-cols-2 gap-y-2 gap-x-5">
         <RenderField label="First Name" name="firstName" type="text" placeholder="Enter your first name" />
         <RenderField label="Last Name" name="lastName" type="text" placeholder="Enter your last name" />
-        <RenderField label="Email" name="email" type="email" placeholder="Enter your email" />
+        <RenderField
+          label="Email"
+          name="email"
+          type="email"
+          placeholder="Enter your email"
+          validateInput={validateEmail}
+          errorMessage="Please enter a valid email address"
+        />
         <RenderField label="Mobile Number" name="mobile" type="tel" placeholder="Enter your mobile number" />
         <RenderField label="Date of Birth" name="dateOfBirth" type="date" placeholder="" />
         <div className="space-y-1">
@@ -58,7 +68,7 @@ const PersonalInformationForm: React.FC<PersonalInformationFormProps> = ({ nextS
         <RenderField label="Country" name="country" type="select" placeholder="Select Country" options={getCountries()} />
         <RenderField label="State" name="state" type="select" placeholder="Select State" options={states} />
         <RenderField label="City" name="city" type="select" placeholder="Select City" options={cities} />
-        <RenderField label="Running Club" name="runningClub" type="text" placeholder="Enter running club name (optional)" />
+        <RenderField label="Running Club" name="runningClub" type="text" placeholder="Enter running club name (optional)" required={false} />
         <RenderField label="Occupation" name="occupation" type="select" placeholder="Select Occupation" options={occupations} />
       </div>
 

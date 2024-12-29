@@ -16,11 +16,23 @@ const RegistrationPage = () => {
   const [step, setStep] = useState(1);
 
   const nextStep = () => {
+    const inputs = document.querySelectorAll("input, select");
+    inputs.forEach((input) => {
+      const event = new FocusEvent("blur");
+      input.dispatchEvent(event);
+    });
+
     if (validateStep()) {
       setStep(step + 1);
     }
   };
+
   const prevStep = () => setStep(step - 1);
+
+  const isValidEmail = (email: string): boolean => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
 
   const validateStep = () => {
     switch (step) {
@@ -34,19 +46,19 @@ const RegistrationPage = () => {
           !form.dateOfBirth ||
           !form.country ||
           !form.state ||
-          !form.city
+          !form.city ||
+          !form.occupation
         ) {
           toast.error("Please fill in all required fields");
           return false;
         }
+        if (!isValidEmail(form.email)) {
+          toast.error("Please enter a valid email address");
+          return false;
+        }
         break;
       case 2:
-        if (
-          !form.raceCategory ||
-          !form.tShirtSize ||
-          !form.emergencyContactName ||
-          !form.emergencyContactNumber
-        ) {
+        if (!form.raceCategory || !form.tShirtSize || !form.emergencyContactName || !form.emergencyContactNumber) {
           toast.error("Please fill in all required fields");
           return false;
         }
@@ -56,10 +68,7 @@ const RegistrationPage = () => {
           toast.error("Please select a payment method");
           return false;
         }
-        if (
-          form.paymentMethod === "CARD" &&
-          (!form.cardNumber || !form.cardName || !form.expiryDate || !form.cvv)
-        ) {
+        if (form.paymentMethod === "CARD" && (!form.cardNumber || !form.cardName || !form.expiryDate || !form.cvv)) {
           toast.error("Please fill in all card details");
           return false;
         }
@@ -67,10 +76,7 @@ const RegistrationPage = () => {
           toast.error("Please enter UPI ID");
           return false;
         }
-        if (
-          form.paymentMethod === "NETBANKING" &&
-          (!form.bankName || !form.accountNumber || !form.ifscCode)
-        ) {
+        if (form.paymentMethod === "NETBANKING" && (!form.bankName || !form.accountNumber || !form.ifscCode)) {
           toast.error("Please fill in all netbanking details");
           return false;
         }
@@ -109,12 +115,7 @@ const RegistrationPage = () => {
             },
             payment_info: {
               paymentMethod: form.paymentMethod,
-              transactionDetails:
-                form.paymentMethod === "CARD"
-                  ? "Card payment"
-                  : form.paymentMethod === "UPI"
-                  ? "UPI payment"
-                  : "Net banking payment",
+              transactionDetails: form.paymentMethod === "CARD" ? "Card payment" : form.paymentMethod === "UPI" ? "UPI payment" : "Net banking payment",
             },
           },
         ])
@@ -130,11 +131,7 @@ const RegistrationPage = () => {
       router.push("/success");
     } catch (error) {
       console.error("Error submitting registration:", error);
-      toast.error(
-        `Failed to submit registration: ${
-          error instanceof Error ? error.message : "Unknown error"
-        }`
-      );
+      toast.error(`Failed to submit registration: ${error instanceof Error ? error.message : "Unknown error"}`);
     }
   };
 
@@ -147,7 +144,7 @@ const RegistrationPage = () => {
       case 3:
         return <PaymentForm prevStep={prevStep} handleSubmit={handleSubmit} />;
       default:
-        return <PersonalInformationForm nextStep={nextStep} />;
+        return null;
     }
   };
 
@@ -167,28 +164,12 @@ const RegistrationPage = () => {
           <div className="flex justify-between p-4 w-full rounded-xl bg-gray-900/50 backdrop-blur">
             {[1, 2, 3].map((i) => (
               <div key={i} className="flex items-center">
-                <div
-                  className={`w-10 h-10 rounded-full ${
-                    step >= i ? "bg-[#4CAF50]" : "bg-gray-600"
-                  } flex items-center justify-center`}
-                >
+                <div className={`w-10 h-10 rounded-full ${step >= i ? "bg-[#4CAF50]" : "bg-gray-600"} flex items-center justify-center`}>
                   <span className="text-lg font-semibold text-white">{i}</span>
                 </div>
                 <div className="ml-4">
-                  <p
-                    className={`${
-                      step >= i ? "text-[#4CAF50]" : "text-gray-400"
-                    } font-bold`}
-                  >
-                    Step {i}
-                  </p>
-                  <p className="text-sm text-gray-300">
-                    {i === 1
-                      ? "Personal Details"
-                      : i === 2
-                      ? "Race Details"
-                      : "Payment"}
-                  </p>
+                  <p className={`${step >= i ? "text-[#4CAF50]" : "text-gray-400"} font-bold`}>Step {i}</p>
+                  <p className="text-sm text-gray-300">{i === 1 ? "Personal Details" : i === 2 ? "Race Details" : "Payment"}</p>
                 </div>
               </div>
             ))}
