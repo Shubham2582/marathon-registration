@@ -1,5 +1,6 @@
 import { ChevronRight, ChevronLeft } from "lucide-react";
 import { RenderField } from "@/components/render-field";
+import { validateName } from "@/utils/validation";
 
 interface MarathonDetailsFormProps {
   nextStep: () => void;
@@ -36,7 +37,13 @@ const MarathonDetailsForm: React.FC<MarathonDetailsFormProps> = ({ nextStep, pre
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="space-y-2">
-          <RenderField label="Emergency Contact Name" name="emergencyContactName" placeholder="Enter emergency contact name" />
+          <RenderField
+            label="Emergency Contact Name"
+            name="emergencyContactName"
+            placeholder="Enter emergency contact name"
+            validateInput={validateName}
+            errorMessage="Please enter a valid name (letters only)"
+          />
         </div>
 
         <div className="space-y-2">

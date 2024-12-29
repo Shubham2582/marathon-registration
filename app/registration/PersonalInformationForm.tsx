@@ -9,6 +9,7 @@ import { occupations } from "@/src/data/occupations";
 import { fetchAddressFromPincode } from "@/services/pincodeService";
 import { toast } from "react-hot-toast";
 import { getCountries } from "@/src/data/locations";
+import { validateName } from "@/utils/validation";
 
 interface PersonalInformationFormProps {
   nextStep: () => void;
@@ -57,8 +58,22 @@ const PersonalInformationForm: React.FC<PersonalInformationFormProps> = ({ nextS
   return (
     <BambooFrame>
       <div className="grid grid-cols-2 gap-y-2 gap-x-5">
-        <RenderField label="First Name" name="firstName" type="text" placeholder="Enter your first name" />
-        <RenderField label="Last Name" name="lastName" type="text" placeholder="Enter your last name" />
+        <RenderField
+          label="First Name"
+          name="firstName"
+          type="text"
+          placeholder="Enter your first name"
+          validateInput={validateName}
+          errorMessage="Please enter a valid name (letters only)"
+        />
+        <RenderField
+          label="Last Name"
+          name="lastName"
+          type="text"
+          placeholder="Enter your last name"
+          validateInput={validateName}
+          errorMessage="Please enter a valid name (letters only)"
+        />
         <RenderField
           label="Email"
           name="email"
