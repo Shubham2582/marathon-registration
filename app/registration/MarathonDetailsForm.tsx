@@ -12,7 +12,7 @@ const MarathonDetailsForm: React.FC<MarathonDetailsFormProps> = ({ nextStep, pre
   };
 
   const handleNextStep = (e: React.MouseEvent) => {
-    e.preventDefault(); // Add this to prevent form submission
+    e.preventDefault();
     nextStep();
   };
 

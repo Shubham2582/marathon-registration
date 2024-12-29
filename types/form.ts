@@ -7,9 +7,9 @@ export interface RegistrationForm {
   gender: "MALE" | "FEMALE";
   dateOfBirth: Date | null;
   country: string;
+  pincode: string;
   state: string;
   city: string;
-  runningClub: string;
   occupation: string;
 
   paymentMethod: "UPI" | "NETBANKING" | "CARD";

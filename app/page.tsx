@@ -119,7 +119,6 @@ const RegistrationPage = () => {
               country: form.country,
               state: form.state,
               city: form.city,
-              runningClub: form.runningClub,
               occupation: form.occupation,
             },
             marathon_details: {

@@ -1,22 +1,22 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { ChevronRight } from "lucide-react";
 import { BambooFrame } from "@/components/ui/bamboo-frame";
 import { useRegistrationStore } from "@/store/useRegistration";
 import { RenderField } from "@/components/render-field";
-import { getCountries, getStates, getCities } from "@/src/data/locations";
 import { occupations } from "@/src/data/occupations";
+import { fetchAddressFromPincode } from "@/services/pincodeService";
+import { toast } from "react-hot-toast";
+import { getCountries } from "@/src/data/locations";
 
 interface PersonalInformationFormProps {
   nextStep: () => void;
 }
 
 const PersonalInformationForm: React.FC<PersonalInformationFormProps> = ({ nextStep }) => {
-  const { form: formData, handleChange } = useRegistrationStore();
-
-  const states = getStates(formData.country);
-  const cities = getCities(formData.state);
+  const { form: formData, handleChange, setForm } = useRegistrationStore();
+  const [isLoadingAddress, setIsLoadingAddress] = useState(false);
 
   const validateEmail = (email: string) => {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -24,6 +24,34 @@ const PersonalInformationForm: React.FC<PersonalInformationFormProps> = ({ nextS
 
   const validateMobile = (mobile: string) => {
     return /^[6-9]\d{9}$/.test(mobile);
+  };
+
+  const handlePincodeChange = async (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    handleChange(e);
+    const pincode = e.target.value;
+
+    // Clear only state and city when pincode is cleared or invalid
+    if (pincode.length !== 6) {
+      setForm("state", "");
+      setForm("city", "");
+      return;
+    }
+
+    setIsLoadingAddress(true);
+    try {
+      const addressData = await fetchAddressFromPincode(pincode);
+      if (addressData) {
+        // Only set state and city, not country
+        setForm("state", addressData.State);
+        setForm("city", addressData.District);
+      }
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Failed to fetch address");
+      setForm("state", "");
+      setForm("city", "");
+    } finally {
+      setIsLoadingAddress(false);
+    }
   };
 
   return (
@@ -77,9 +105,17 @@ const PersonalInformationForm: React.FC<PersonalInformationFormProps> = ({ nextS
           </div>
         </div>
         <RenderField label="Country" name="country" type="select" placeholder="Select Country" options={getCountries()} />
-        <RenderField label="State" name="state" type="select" placeholder="Select State" options={states} />
-        <RenderField label="City" name="city" type="select" placeholder="Select City" options={cities} />
-        <RenderField label="Running Club" name="runningClub" type="text" placeholder="Enter running club name (optional)" required={false} />
+        <RenderField
+          label="Pincode"
+          name="pincode"
+          type="text"
+          placeholder="Enter your pincode"
+          validateInput={(value) => /^\d{6}$/.test(value)}
+          errorMessage="Please enter a valid 6-digit pincode"
+          onChange={handlePincodeChange}
+        />
+        <RenderField label="State" name="state" type="text" placeholder={isLoadingAddress ? "Loading..." : "State will be auto-filled"} disabled={true} />
+        <RenderField label="City" name="city" type="text" placeholder={isLoadingAddress ? "Loading..." : "City will be auto-filled"} disabled={true} />
         <RenderField label="Occupation" name="occupation" type="select" placeholder="Select Occupation" options={occupations} />
       </div>
 
