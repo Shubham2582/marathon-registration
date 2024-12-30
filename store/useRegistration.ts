@@ -26,6 +26,7 @@ const defaultFormState: RegistrationForm = {
   tShirtSize: "",
   emergencyContactNumber: "",
   emergencyContactName: "",
+  bloodGroup: "",
 };
 
 type RegistrationStore = {

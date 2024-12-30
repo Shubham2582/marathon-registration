@@ -11,6 +11,7 @@ import { toast } from "react-hot-toast";
 import { getCountries } from "@/src/data/locations";
 import { validateName } from "@/utils/validation";
 import { validatePostalCode, getPostalCodeFormat } from "@/utils/postalCodes";
+import { bloodGroups } from "@/src/data/bloodGroups";
 
 interface PersonalInformationFormProps {
   nextStep: () => void;
@@ -156,13 +157,14 @@ const PersonalInformationForm: React.FC<PersonalInformationFormProps> = ({ nextS
           </>
         )}
         <RenderField label="Occupation / पेशा" name="occupation" type="select" placeholder="Select Occupation" options={occupations} />
+        <RenderField label="Blood Group / रक्त समूह" name="bloodGroup" type="select" placeholder="Select Blood Group" options={bloodGroups} />
       </div>
 
       <div className="flex justify-between items-center">
         <p className="text-white text-sm">Join the ultimate adventure in wilderness running</p>
         <button
           onClick={nextStep}
-          className="px-6 py-2 bg-[#4CAF50] text-white text-sm rounded-lg hover:bg-[#45A049] transition-colors flex items-center gap-2"
+          className="px-6 py-2 mt-2 bg-[#4CAF50] text-white text-sm rounded-lg hover:bg-[#45A049] transition-colors flex items-center gap-2"
         >
           Next Step
           <ChevronRight className="w-4 h-4" />

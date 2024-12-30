@@ -1,3 +1,5 @@
+import { BloodGroup } from "@/src/data/bloodGroups";
+
 export interface RegistrationForm {
   // --- PERSONEL INFORMATION ---
   firstName: string;
@@ -11,6 +13,7 @@ export interface RegistrationForm {
   state: string;
   city: string;
   occupation: string;
+  bloodGroup: BloodGroup | "";
 
   paymentMethod: "UPI" | "NETBANKING" | "CARD";
 

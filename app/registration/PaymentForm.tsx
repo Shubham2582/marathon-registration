@@ -61,7 +61,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ prevStep, handleSubmit }) => 
         <>
           <RenderField label="Card Number / कार्ड नंबर" name="cardNumber" placeholder="1234 5678 9012 3456" />
 
-          <RenderField label="Cardholder Name / कार्डधारक का नाम" name="cardName" placeholder="John Doe" />
+          <RenderField label="Cardholder Name / कार्डधारक का नाम" name="cardName" placeholder="pratham sahu" />
 
           <div className="grid grid-cols-2 gap-4">
             <RenderField label="Expiry Date / समाप्ति तिथि" name="expiryDate" type="date" placeholder="MM/YY" />
