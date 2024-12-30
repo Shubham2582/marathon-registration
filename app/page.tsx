@@ -179,7 +179,7 @@ const RegistrationPage = () => {
       />
 
       <div className="relative min-h-screen flex flex-col items-center justify-center py-12 px-4">
-        <div className="w-full max-w-2xl mx-auto mt-10 space-y-5 p-2">
+        <div className="w-full max-w-2xl mx-auto mt-32 space-y-5 p-2">
           <div className="flex justify-between p-4 w-full rounded-xl bg-gray-900/50 backdrop-blur">
             {[1, 2, 3].map((i) => (
               <div key={i} className="flex items-center">

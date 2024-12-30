@@ -62,7 +62,7 @@ const PersonalInformationForm: React.FC<PersonalInformationFormProps> = ({ nextS
 
   return (
     <BambooFrame>
-      <div className="grid grid-cols-2 gap-y-4 gap-x-6 p-6">
+      <div className="grid grid-cols-2 gap-y-2 gap-x-20">
         <RenderField
           label="First Name / पहला नाम"
           name="firstName"
@@ -163,7 +163,7 @@ const PersonalInformationForm: React.FC<PersonalInformationFormProps> = ({ nextS
       </div>
 
       <div className="flex justify-between items-center">
-        <p className="text-white text-sm">Join the ultimate adventure in wilderness running</p>
+        <p className="text-white text-sm"></p>
         <button
           onClick={nextStep}
           className="px-6 py-2 mt-2 bg-[#4CAF50] text-white text-sm rounded-lg hover:bg-[#45A049] transition-colors flex items-center gap-2"
