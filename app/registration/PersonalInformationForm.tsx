@@ -12,6 +12,7 @@ import { getCountries } from "@/src/data/locations";
 import { validateName } from "@/utils/validation";
 import { validatePostalCode, getPostalCodeFormat } from "@/utils/postalCodes";
 import { bloodGroups } from "@/src/data/bloodGroups";
+import { ImageUpload } from "@/components/image-upload";
 
 interface PersonalInformationFormProps {
   nextStep: () => void;
@@ -61,7 +62,7 @@ const PersonalInformationForm: React.FC<PersonalInformationFormProps> = ({ nextS
 
   return (
     <BambooFrame>
-      <div className="grid grid-cols-2 gap-y-2 gap-x-5">
+      <div className="grid grid-cols-2 gap-y-4 gap-x-6 p-6">
         <RenderField
           label="First Name / पहला नाम"
           name="firstName"
@@ -158,6 +159,7 @@ const PersonalInformationForm: React.FC<PersonalInformationFormProps> = ({ nextS
         )}
         <RenderField label="Occupation / पेशा" name="occupation" type="select" placeholder="Select Occupation" options={occupations} />
         <RenderField label="Blood Group / रक्त समूह" name="bloodGroup" type="select" placeholder="Select Blood Group" options={bloodGroups} />
+        <ImageUpload />
       </div>
 
       <div className="flex justify-between items-center">

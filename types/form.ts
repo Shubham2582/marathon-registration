@@ -14,6 +14,7 @@ export interface RegistrationForm {
   city: string;
   occupation: string;
   bloodGroup: BloodGroup | "";
+  selfie: File | null;
 
   paymentMethod: "UPI" | "NETBANKING" | "CARD";
 

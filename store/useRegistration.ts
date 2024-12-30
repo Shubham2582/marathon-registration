@@ -27,18 +27,19 @@ const defaultFormState: RegistrationForm = {
   emergencyContactNumber: "",
   emergencyContactName: "",
   bloodGroup: "",
+  selfie: null,
 };
 
 type RegistrationStore = {
   form: RegistrationForm;
-  setForm: <K extends keyof RegistrationForm>(field: K, value: RegistrationForm[K]) => void;
+  setForm: <K extends keyof RegistrationForm>(field: K, value: RegistrationForm[K] | File) => void;
   resetForm: () => void;
   handleChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
 };
 
 export const useRegistrationStore = create<RegistrationStore>((set) => ({
   form: defaultFormState,
-  setForm: (field: string, value: string | number | Date | null) =>
+  setForm: (field, value) =>
     set((state) => ({
       form: { ...state.form, [field]: value },
     })),
