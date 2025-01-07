@@ -30,7 +30,7 @@ export default function RegistrationSuccess() {
               Registration Successful!
             </h1>
             <p className="text-gray-300 mb-8">
-              Thank you for registering for the Jungle Adventure Racing. We look
+              Thank you for registering for the Abujhmad Peace Marathon. We look
               forward to seeing you at the event!
             </p>
             <button

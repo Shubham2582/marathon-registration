@@ -118,7 +118,7 @@ const RegistrationPage = () => {
 
       console.log("Registration data:", data);
       toast.success("Registration successful!");
-      router.push("/success");
+      router.push("/registration/success");
     } catch (error) {
       console.error("Error submitting registration:", error);
       toast.error(`Failed to submit registration: ${error instanceof Error ? error.message : "Unknown error"}`);
