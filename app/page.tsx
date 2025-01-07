@@ -55,7 +55,7 @@ const RegistrationPage = () => {
         age--;
       }
 
-      return age >= 10;
+      return age >= 5;
     } catch (error) {
       return false;
     }
