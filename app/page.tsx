@@ -57,6 +57,7 @@ const RegistrationPage = () => {
 
       return age >= 5;
     } catch (error) {
+      console.error("Error calculating age:", error);
       return false;
     }
   };
