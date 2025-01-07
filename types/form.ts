@@ -7,7 +7,7 @@ export interface RegistrationForm {
   email: string;
   mobile: string;
   gender: "MALE" | "FEMALE";
-  dateOfBirth: Date | null;
+  dateOfBirth: string;
   country: string;
   pincode: string;
   state: string;

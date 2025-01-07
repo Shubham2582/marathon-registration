@@ -13,6 +13,7 @@ interface RenderFieldProps {
   errorMessage?: string;
   disabled?: boolean;
   onChange?: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void | Promise<void>;
+  max?: string;
 }
 
 export const RenderField: React.FC<RenderFieldProps> = ({
@@ -26,6 +27,7 @@ export const RenderField: React.FC<RenderFieldProps> = ({
   errorMessage = "This field is required",
   disabled = false,
   onChange,
+  max,
 }) => {
   const { form: formData, handleChange } = useRegistrationStore();
   const [showError, setShowError] = useState(false);
@@ -94,6 +96,7 @@ export const RenderField: React.FC<RenderFieldProps> = ({
             className={`${commonClasses} ${showFieldError ? "border-red-500" : ""} ${disabled ? "bg-gray-700/50 cursor-not-allowed" : ""}`}
             onBlur={() => setShowError(true)}
             disabled={disabled}
+            max={max} // Add this line
           />
           {showFieldError && <p className="text-red-500 text-xs mt-1">{value && validateInput ? errorMessage : "This field is required"}</p>}
         </div>

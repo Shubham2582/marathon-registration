@@ -60,6 +60,12 @@ const PersonalInformationForm: React.FC<PersonalInformationFormProps> = ({ nextS
     }
   };
 
+  const getMaxDate = () => {
+    const date = new Date();
+    date.setFullYear(date.getFullYear() - 5);
+    return date.toISOString().split("T")[0];
+  };
+
   return (
     <BambooFrame>
       <div className="grid grid-cols-2 gap-y-2 gap-x-20">
@@ -95,7 +101,15 @@ const PersonalInformationForm: React.FC<PersonalInformationFormProps> = ({ nextS
           validateInput={validateMobile}
           errorMessage="Please enter a valid 10-digit mobile number"
         />
-        <RenderField label="Date of Birth / जन्म तिथि" name="dateOfBirth" type="date" placeholder="" />
+        <RenderField
+          label="Date of Birth / जन्म तिथि"
+          name="dateOfBirth"
+          type="date"
+          placeholder="Select your date of birth"
+          max={getMaxDate()}
+          required
+          errorMessage="You must be at least 10 years old to participate"
+        />
         <div className="space-y-1">
           <label className="block text-white text-sm font-medium">Gender* / लिंग</label>
           <div className="flex gap-4">

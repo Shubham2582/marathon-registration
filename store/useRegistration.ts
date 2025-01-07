@@ -7,7 +7,7 @@ const defaultFormState: RegistrationForm = {
   email: "",
   mobile: "",
   gender: "MALE",
-  dateOfBirth: null,
+  dateOfBirth: "", // Change from null to empty string
   country: "",
   pincode: "",
   state: "",

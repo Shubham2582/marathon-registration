@@ -39,6 +39,28 @@ const RegistrationPage = () => {
     return mobileRegex.test(mobile);
   };
 
+  const isValidAge = (dateOfBirth: string | Date): boolean => {
+    try {
+      const dob = dateOfBirth instanceof Date ? dateOfBirth : new Date(dateOfBirth);
+      const today = new Date();
+
+      if (isNaN(dob.getTime())) return false;
+
+      const yearDiff = today.getFullYear() - dob.getFullYear();
+      const monthDiff = today.getMonth() - dob.getMonth();
+      const dayDiff = today.getDate() - dob.getDate();
+
+      let age = yearDiff;
+      if (monthDiff < 0 || (monthDiff === 0 && dayDiff < 0)) {
+        age--;
+      }
+
+      return age >= 10;
+    } catch (error) {
+      return false;
+    }
+  };
+
   const validateStep = () => {
     switch (step) {
       case 1:
@@ -63,6 +85,10 @@ const RegistrationPage = () => {
         }
         if (!isValidMobile(form.mobile)) {
           toast.error("Please enter a valid 10-digit mobile number");
+          return false;
+        }
+        if (!isValidAge(form.dateOfBirth)) {
+          toast.error("You must be at least 10 years old to participate");
           return false;
         }
         break;
