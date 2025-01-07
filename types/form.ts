@@ -24,14 +24,6 @@ export interface RegistrationForm {
   expiryDate: Date | null;
   cvv: number | null;
 
-  // --- UPI PAYMENT ---
-  upiId: string;
-
-  // --- NET BANKING PAYMENT ---
-  bankName: string;
-  accountNumber: string;
-  ifscCode: string;
-
   // --- MARATHON DETAILS ---
   raceCategory: string;
   tShirtSize: string;

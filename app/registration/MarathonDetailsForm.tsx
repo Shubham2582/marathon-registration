@@ -1,24 +1,19 @@
-import { ChevronRight, ChevronLeft } from "lucide-react";
+import { ChevronLeft } from "lucide-react";
 import { RenderField } from "@/components/render-field";
 import { validateName } from "@/utils/validation";
 
 interface MarathonDetailsFormProps {
-  nextStep: () => void;
   prevStep: () => void;
+  handleSubmit: (e: React.FormEvent) => Promise<void>;
 }
 
-const MarathonDetailsForm: React.FC<MarathonDetailsFormProps> = ({ nextStep, prevStep }) => {
+const MarathonDetailsForm: React.FC<MarathonDetailsFormProps> = ({ prevStep, handleSubmit }) => {
   const validateMobile = (mobile: string) => {
     return /^[6-9]\d{9}$/.test(mobile);
   };
 
-  const handleNextStep = (e: React.MouseEvent) => {
-    e.preventDefault();
-    nextStep();
-  };
-
   return (
-    <form className="space-y-8" onSubmit={(e) => e.preventDefault()}>
+    <form className="space-y-8" onSubmit={handleSubmit}>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="space-y-2">
           <RenderField
@@ -73,13 +68,8 @@ const MarathonDetailsForm: React.FC<MarathonDetailsFormProps> = ({ nextStep, pre
           <ChevronLeft className="w-4 h-4" />
           <span>Back</span>
         </button>
-        <button
-          type="button"
-          onClick={handleNextStep}
-          className="px-6 py-2 h-fit bg-[#4CAF50] text-white text-sm rounded-lg hover:bg-[#45A049] transition-colors flex items-center gap-2"
-        >
-          Next Step
-          <ChevronRight className="w-4 h-4" />
+        <button type="submit" className="px-6 py-2 h-fit bg-[#4CAF50] text-white text-sm rounded-lg hover:bg-[#45A049] transition-colors">
+          Complete Registration
         </button>
       </div>
     </form>
