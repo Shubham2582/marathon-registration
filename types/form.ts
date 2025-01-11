@@ -24,6 +24,9 @@ export interface RegistrationForm {
   expiryDate: Date | null;
   cvv: number | null;
 
+  // --- OTP VERIFICATION ---
+  otp?: string;
+
   // --- MARATHON DETAILS ---
   raceCategory: string;
   tShirtSize: string;
