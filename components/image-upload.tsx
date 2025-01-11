@@ -1,6 +1,7 @@
 import React, { useRef, useState } from "react";
 import { Camera } from "lucide-react";
 import { useRegistrationStore } from "@/store/useRegistration";
+import Image from "next/image";
 
 export const ImageUpload = () => {
   const { setForm } = useRegistrationStore();
@@ -33,7 +34,9 @@ export const ImageUpload = () => {
         <input type="file" ref={fileInputRef} className="hidden" accept="image/*" onChange={handleFileChange} />
         {preview ? (
           <div className="flex items-center gap-2 w-full">
-            <img src={preview} alt="Preview" className="w-6 h-6 object-cover rounded" />
+            <div className="relative w-6 h-6">
+              <Image src={preview} alt="Preview" fill className="object-cover rounded" />
+            </div>
             <p className="text-white text-sm truncate">Click to change</p>
           </div>
         ) : (

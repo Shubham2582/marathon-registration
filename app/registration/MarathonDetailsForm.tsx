@@ -60,7 +60,11 @@ const MarathonDetailsForm: React.FC<MarathonDetailsFormProps> = ({ prevStep, han
       if (error) throw error;
 
       if (data) {
-        await handleSubmit(new Event("submit") as any);
+        const event = {
+          preventDefault: () => {},
+        } as React.FormEvent<Element>;
+
+        await handleSubmit(event);
       } else {
         toast.error("Invalid OTP");
       }
