@@ -1,27 +1,34 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Volume2, VolumeX } from "lucide-react";
 
 export const MusicControl = () => {
   const [isPlaying, setIsPlaying] = useState(false);
-  const [audio] = useState(new Audio("/bg-music.mp3"));
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
-    audio.loop = true;
-    audio.volume = 0.3;
+    // Initialize audio only on client side
+    audioRef.current = new Audio("/bg-music.mp3");
+    audioRef.current.loop = true;
+    audioRef.current.volume = 0.3;
+
     return () => {
-      audio.pause();
-      audio.currentTime = 0;
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.currentTime = 0;
+      }
     };
-  }, [audio]);
+  }, []);
 
   const toggleMusic = async () => {
+    if (!audioRef.current) return;
+
     try {
       if (isPlaying) {
-        audio.pause();
+        audioRef.current.pause();
       } else {
-        await audio.play();
+        await audioRef.current.play();
       }
       setIsPlaying(!isPlaying);
     } catch (error) {
@@ -32,7 +39,9 @@ export const MusicControl = () => {
   return (
     <button
       onClick={toggleMusic}
-      className="fixed bottom-4 right-4 z-50 p-3 rounded-full bg-gray-900/50 backdrop-blur border border-gray-700 hover:bg-gray-800/50 transition-colors"
+      className="fixed bottom-4 right-4 z-50 p-3 rounded-full bg-gray-900/50 backdrop-blur 
+      border border-gray-700 hover:bg-gray-800/50 transition-colors
+      animate-bounce-slow"
       title={isPlaying ? "Mute" : "Play Music"}
     >
       {isPlaying ? <Volume2 className="w-6 h-6 text-[#4CAF50]" /> : <VolumeX className="w-6 h-6 text-gray-400" />}
