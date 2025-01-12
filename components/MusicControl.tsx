@@ -8,7 +8,6 @@ export const MusicControl = () => {
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
-    // Initialize audio only on client side
     audioRef.current = new Audio("/bg-music.mp3");
     audioRef.current.loop = true;
     audioRef.current.volume = 0.3;
