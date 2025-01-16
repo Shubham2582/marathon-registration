@@ -145,8 +145,40 @@ const RegistrationPage = () => {
         throw error;
       }
 
+      // Send confirmation email after successful registration
+      try {
+        const emailData = {
+          userData: {
+            personal_info: {
+              email: form.email,
+              firstName: form.firstName,
+              lastName: form.lastName,
+            },
+            marathon_details: {
+              raceCategory: form.raceCategory,
+              tShirtSize: form.tShirtSize,
+            },
+          },
+        };
+
+        const emailResponse = await fetch("/api/send-email", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(emailData),
+        });
+
+        if (!emailResponse.ok) {
+          console.error("Failed to send confirmation email");
+        }
+      } catch (emailError) {
+        console.error("Error sending confirmation email:", emailError);
+        // Don't throw here, as registration was successful
+      }
+
       console.log("Registration successful, ID:", data?.[0]?.id);
-      toast.success("Registration successful!");
+      toast.success("Registration successful! Check your email for confirmation.");
       router.push("/registration/success");
     } catch (error) {
       console.error("Full error object:", error);
