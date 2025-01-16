@@ -110,7 +110,7 @@ const RegistrationPage = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validateStep()) return;
-
+  
     try {
       const { data, error } = await supabase
         .from("registrations")
@@ -137,13 +137,27 @@ const RegistrationPage = () => {
           },
         ])
         .select();
-
+  
       if (error) {
         console.error("Supabase error:", error);
         throw new Error(error.message);
       }
-
-      console.log("Registration data:", data);
+  
+      // Send confirmation email
+      const emailResponse = await fetch('/api/send-email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userData: data[0],
+        }),
+      });
+  
+      if (!emailResponse.ok) {
+        console.error('Failed to send confirmation email');
+      }
+  
       toast.success("Registration successful!");
       router.push("/registration/success");
     } catch (error) {
@@ -151,6 +165,7 @@ const RegistrationPage = () => {
       toast.error(`Failed to submit registration: ${error instanceof Error ? error.message : "Unknown error"}`);
     }
   };
+  
 
   const renderStep = () => {
     if (step < 1) setStep(1);
