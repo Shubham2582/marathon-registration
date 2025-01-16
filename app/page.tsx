@@ -40,6 +40,14 @@ const RegistrationPage = () => {
   };
 
   const validateStep = () => {
+    console.log("Validating step", step);
+    console.log("Missing fields:", {
+      dateOfBirth: !form.dateOfBirth,
+      selfie: !form.selfie,
+      raceCategory: !form.raceCategory,
+      tShirtSize: !form.tShirtSize,
+    });
+
     switch (step) {
       case 1:
         if (!form.gender || !form.mobile || !form.email) {
@@ -50,74 +58,97 @@ const RegistrationPage = () => {
           toast.error("Please enter a valid 10-digit mobile number");
           return false;
         }
-        break;
+        return true;
+
       case 2:
-        if (
-          !form.firstName ||
-          !form.lastName ||
-          !form.dateOfBirth ||
-          !form.country ||
-          !form.state ||
-          !form.city ||
-          !form.occupation ||
-          !form.selfie ||
-          !form.raceCategory ||
-          !form.tShirtSize
-        ) {
-          toast.error("Please fill in all required fields");
+        const requiredFields = {
+          "First Name": form.firstName,
+          "Last Name": form.lastName,
+          "Date of Birth": form.dateOfBirth,
+          Country: form.country,
+          State: form.state,
+          City: form.city,
+          Occupation: form.occupation,
+          "Race Category": form.raceCategory,
+          "T-Shirt Size": form.tShirtSize,
+        };
+
+        const missingFields = Object.entries(requiredFields)
+          .filter(([_, value]) => !value)
+          .map(([key]) => key);
+
+        if (missingFields.length > 0) {
+          toast.error(`Please fill in: ${missingFields.join(", ")}`);
           return false;
         }
+
         if (!isValidEmail(form.email)) {
           toast.error("Please enter a valid email address");
           return false;
         }
-        break;
+        return true;
+
+      default:
+        return true;
     }
-    return true;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!validateStep()) return;
+    console.log("Form submission started");
+    console.log("Current form data:", form);
+
+    const isValid = validateStep();
+    console.log("Form validation result:", isValid);
+
+    if (!isValid) {
+      console.log("Form validation failed");
+      return;
+    }
 
     try {
-      const { data, error } = await supabase
-        .from("registrations")
-        .insert([
-          {
-            personal_info: {
-              firstName: form.firstName,
-              lastName: form.lastName,
-              email: form.email,
-              mobile: form.mobile,
-              gender: form.gender,
-              dateOfBirth: form.dateOfBirth,
-              country: form.country,
-              state: form.state,
-              city: form.city,
-              occupation: form.occupation,
-            },
-            marathon_details: {
-              raceCategory: form.raceCategory,
-              tShirtSize: form.tShirtSize,
-              emergencyContactName: form.emergencyContactName,
-              emergencyContactNumber: form.emergencyContactNumber,
-            },
-          },
-        ])
-        .select();
+      // First, verify the table structure
+      const { error: tableError } = await supabase.from("registrations").select("id").limit(1);
 
-      if (error) {
-        console.error("Supabase error:", error);
-        throw new Error(error.message);
+      if (tableError) {
+        console.error("Table verification failed:", tableError);
+        throw new Error("Database table structure verification failed");
       }
 
-      console.log("Registration data:", data);
+      console.log("Preparing data for Supabase insertion...");
+      const registrationData = {
+        first_name: form.firstName,
+        last_name: form.lastName,
+        email: form.email,
+        mobile: form.mobile,
+        gender: form.gender,
+        date_of_birth: form.dateOfBirth,
+        country: form.country,
+        state: form.state,
+        city: form.city,
+        occupation: form.occupation,
+        race_category: form.raceCategory,
+        t_shirt_size: form.tShirtSize,
+        emergency_contact_name: form.emergencyContactName || null,
+        emergency_contact_number: form.emergencyContactNumber || null,
+        blood_group: form.bloodGroup || null,
+      };
+
+      console.log("Sending data to Supabase:", registrationData);
+
+      const { data, error } = await supabase.from("registrations").insert([registrationData]).select("id");
+
+      if (error) {
+        console.error("Supabase insertion error:", error);
+        throw error;
+      }
+
+      console.log("Registration successful, ID:", data?.[0]?.id);
       toast.success("Registration successful!");
       router.push("/registration/success");
     } catch (error) {
-      console.error("Error submitting registration:", error);
-      toast.error(`Failed to submit registration: ${error instanceof Error ? error.message : "Unknown error"}`);
+      console.error("Full error object:", error);
+      toast.error(error instanceof Error ? error.message : "Registration failed");
     }
   };
 
