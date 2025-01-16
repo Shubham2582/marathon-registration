@@ -27,15 +27,19 @@ const defaultFormState: RegistrationForm = {
   otp: "",
 };
 
-type RegistrationStore = {
+interface RegistrationStore {
   form: RegistrationForm;
+  isOtpVerified: boolean;
+  setOtpVerified: (value: boolean) => void;
   setForm: <K extends keyof RegistrationForm>(field: K, value: RegistrationForm[K] | File) => void;
   resetForm: () => void;
   handleChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
-};
+}
 
 export const useRegistrationStore = create<RegistrationStore>((set) => ({
   form: defaultFormState,
+  isOtpVerified: false,
+  setOtpVerified: (value) => set({ isOtpVerified: value }),
   setForm: (field, value) =>
     set((state) => ({
       form: { ...state.form, [field]: value },

@@ -78,8 +78,9 @@ export const RenderField: React.FC<RenderFieldProps> = ({
   const isFieldEmpty = required && !value;
   const isFieldInvalid = isFieldEmpty || (value && validateInput && !validateInput(value));
   const showFieldError = showError && isFieldInvalid;
-  const commonClasses =
-    "w-full bg-gray-900/50 backdrop-blur-2xl rounded-lg px-3 py-2 text-white text-sm placeholder-gray-300 focus:outline-none focus:ring-1 focus:ring-[#4CAF50] border border-gray-700";
+  const commonClasses = `w-full bg-gray-900/50 backdrop-blur-2xl rounded-lg px-3 py-2 text-white text-sm 
+    placeholder-gray-300 focus:outline-none focus:ring-1 focus:ring-[#4CAF50] border border-gray-700
+    ${disabled ? "cursor-not-allowed bg-gray-800/50" : ""}`;
 
   return (
     <div>
@@ -117,12 +118,14 @@ export const RenderField: React.FC<RenderFieldProps> = ({
               onChange={handleInputChange}
               onFocus={handleFocus}
               placeholder={placeholder}
-              className={`${commonClasses} ${showFieldError ? "border-red-500" : ""} ${disabled ? "bg-gray-700/50 cursor-not-allowed" : ""}`}
+              className={`${commonClasses} ${showFieldError ? "border-red-500" : ""}`}
               onBlur={() => setShowError(true)}
               disabled={disabled}
               max={max}
             />
-            {showFieldError && <p className="text-red-500 text-xs mt-1">{value && validateInput ? errorMessage : "This field is required"}</p>}
+            {showFieldError && (
+              <p className="text-red-500 text-xs mt-1">{disabled ? errorMessage : value && validateInput ? errorMessage : "This field is required"}</p>
+            )}
           </div>
         )}
       </div>

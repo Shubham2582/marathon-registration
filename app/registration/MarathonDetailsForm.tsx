@@ -1,46 +1,67 @@
 "use client";
 
 import React, { useState } from "react";
-import { ChevronLeft } from "lucide-react";
 import { BambooFrame } from "@/components/ui/bamboo-frame";
 import { useRegistrationStore } from "@/store/useRegistration";
 import { RenderField } from "@/components/render-field";
-import { supabase } from "@/lib/supabase";
 import { toast } from "react-hot-toast";
-import { validateName } from "@/utils/validation";
 
 interface MarathonDetailsFormProps {
-  prevStep: () => void;
-  handleSubmit: (e: React.FormEvent) => Promise<void>;
+  nextStep: () => void;
+  handleSubmit?: (e: React.FormEvent) => Promise<void>;
 }
 
-const MarathonDetailsForm: React.FC<MarathonDetailsFormProps> = ({ prevStep, handleSubmit }) => {
+const MarathonDetailsForm: React.FC<MarathonDetailsFormProps> = ({ nextStep }) => {
   const { form, setForm } = useRegistrationStore();
   const [showOtpInput, setShowOtpInput] = useState(false);
   const [otp, setOtp] = useState("");
   const [isVerifying, setIsVerifying] = useState(false);
+  const [otpMethod, setOtpMethod] = useState<"whatsapp" | "email" | null>(null);
+  const [generatedOTP, setGeneratedOTP] = useState<string>("");
+  const [isOtpVerified, setIsOtpVerified] = useState(false);
 
   const validateMobile = (mobile: string) => {
     return /^[6-9]\d{9}$/.test(mobile);
   };
 
+  const validateEmail = (email: string) => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  };
+
   const generateAndSendOTP = async () => {
     try {
-      const generatedOTP = Math.floor(1000 + Math.random() * 9000).toString();
+      const newOTP = Math.floor(1000 + Math.random() * 9000).toString();
+      setGeneratedOTP(newOTP);
 
-      const { error } = await supabase.from("otp_verifications").insert([
-        {
-          phone_number: form.mobile,
-          otp: generatedOTP,
+      const emailData = {
+        userData: {
+          personal_info: {
+            email: form.email,
+            firstName: "User",
+            lastName: "",
+          },
+          marathon_details: {
+            otp: newOTP,
+          },
         },
-      ]);
+      };
 
-      if (error) throw error;
+      const response = await fetch("/api/send-email", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(emailData),
+      });
 
-      toast.success(`OTP for verification: ${generatedOTP}`);
+      if (!response.ok) {
+        throw new Error("Failed to send OTP email");
+      }
+
+      toast.success(`OTP sent to your ${otpMethod === "email" ? "email" : "mobile"}`);
       setShowOtpInput(true);
     } catch (error) {
-      toast.error("Failed to generate OTP");
+      toast.error("Failed to send OTP");
       console.error(error);
     }
   };
@@ -48,23 +69,10 @@ const MarathonDetailsForm: React.FC<MarathonDetailsFormProps> = ({ prevStep, han
   const verifyOTP = async () => {
     setIsVerifying(true);
     try {
-      const { data, error } = await supabase
-        .from("otp_verifications")
-        .select("*")
-        .eq("phone_number", form.mobile)
-        .eq("otp", otp)
-        .order("created_at", { ascending: false })
-        .limit(1)
-        .single();
-
-      if (error) throw error;
-
-      if (data) {
-        const event = {
-          preventDefault: () => {},
-        } as React.FormEvent<Element>;
-
-        await handleSubmit(event);
+      if (otp === generatedOTP) {
+        toast.success("OTP verified successfully!");
+        setIsOtpVerified(true);
+        setShowOtpInput(false);
       } else {
         toast.error("Invalid OTP");
       }
@@ -76,14 +84,14 @@ const MarathonDetailsForm: React.FC<MarathonDetailsFormProps> = ({ prevStep, han
     }
   };
 
-  const onSubmitClick = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!showOtpInput) {
-      generateAndSendOTP();
-    } else {
-      verifyOTP();
-    }
-  };
+  // const onSubmitClick = (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   if (!showOtpInput) {
+  //     generateAndSendOTP();
+  //   } else {
+  //     verifyOTP();
+  //   }
+  // };
 
   const handleOtpChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const value = e.target.value;
@@ -91,51 +99,86 @@ const MarathonDetailsForm: React.FC<MarathonDetailsFormProps> = ({ prevStep, han
     setOtp(value);
   };
 
+  // const getRaceCategories = (gender: "MALE" | "FEMALE") => {
+  //   return gender === "MALE" ? ["10km", "21km"] : ["5km", "10km", "21km"];
+  // };
+
+  const handleGenderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const gender = e.target.value as "MALE" | "FEMALE";
+    setForm("gender", gender);
+    setForm("raceCategory", "");
+  };
+
+  const startOtpProcess = (method: "whatsapp" | "email") => {
+    setOtpMethod(method);
+    generateAndSendOTP();
+  };
+
+  const handleNextStep = () => {
+    if (!isOtpVerified) {
+      toast.error("Please verify your contact details through OTP first");
+      return;
+    }
+    nextStep();
+  };
+
   return (
     <BambooFrame>
       <div className="space-y-4">
-        <form className="space-y-8" onSubmit={handleSubmit}>
+        <form className="space-y-8">
+          {/* Gender selection */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
-              <RenderField
-                label="Race Category / दौड़ श्रेणी"
-                name="raceCategory"
-                type="select"
-                placeholder="Select Category"
-                options={["5k", "10k", "Half Marathon", "Full Marathon"]}
-              />
-            </div>
-
-            <div className="space-y-2">
-              <RenderField
-                label="T-Shirt Size / टी-शर्ट का आकार"
-                name="tShirtSize"
-                type="select"
-                placeholder="Select Size"
-                options={["S", "M", "L", "XL", "XXL"]}
-              />
+              <div className="space-y-1">
+                <label className="block text-white text-sm font-medium">Gender* / लिंग</label>
+                <div className="flex gap-4">
+                  <label className="flex items-center">
+                    <input
+                      type="radio"
+                      name="gender"
+                      value="MALE"
+                      checked={form.gender === "MALE"}
+                      onChange={handleGenderChange}
+                      className="mr-2 text-[#4CAF50] focus:ring-[#4CAF50]"
+                    />
+                    <span className="text-white text-sm">Male / पुरुष</span>
+                  </label>
+                  <label className="flex items-center">
+                    <input
+                      type="radio"
+                      name="gender"
+                      value="FEMALE"
+                      checked={form.gender === "FEMALE"}
+                      onChange={handleGenderChange}
+                      className="mr-2 text-[#4CAF50] focus:ring-[#4CAF50]"
+                    />
+                    <span className="text-white text-sm">Female / महिला</span>
+                  </label>
+                </div>
+              </div>
             </div>
           </div>
 
+          {/* Contact Information */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
               <RenderField
-                label="Emergency Contact Name / आपातकालीन संपर्क नाम"
-                name="emergencyContactName"
-                placeholder="Enter emergency contact name"
-                validateInput={validateName}
-                errorMessage="Please enter a valid name (letters only)"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <RenderField
-                label="Emergency Contact Number / आपातकालीन संपर्क नंबर"
-                name="emergencyContactNumber"
+                label="Mobile Number / मोबाइल नंबर"
+                name="mobile"
                 type="tel"
-                placeholder="Enter emergency contact number"
+                placeholder="Enter your mobile number"
                 validateInput={validateMobile}
                 errorMessage="Please enter a valid 10-digit mobile number"
+              />
+            </div>
+            <div className="space-y-2">
+              <RenderField
+                label="Email / ईमेल"
+                name="email"
+                type="email"
+                placeholder="Enter your email"
+                validateInput={validateEmail}
+                errorMessage="Please enter a valid email address"
               />
             </div>
           </div>
@@ -182,22 +225,43 @@ const MarathonDetailsForm: React.FC<MarathonDetailsFormProps> = ({ prevStep, han
             </div>
           </div>
 
-          <div className="flex justify-between pt-6">
+          {!showOtpInput && (
+            <div className="flex gap-4 justify-center mt-4">
+              <button
+                type="button"
+                onClick={() => startOtpProcess("whatsapp")}
+                disabled={!form.mobile}
+                className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:bg-gray-600 disabled:cursor-not-allowed"
+              >
+                Send OTP on WhatsApp
+              </button>
+              <button
+                type="button"
+                onClick={() => startOtpProcess("email")}
+                disabled={!form.email}
+                className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-600 disabled:cursor-not-allowed"
+              >
+                Send OTP on Email
+              </button>
+            </div>
+          )}
+
+          {showOtpInput && (
+            <p className="text-center text-sm text-gray-300 mb-4">
+              OTP sent via {otpMethod === "whatsapp" ? `WhatsApp (${form.mobile})` : `Email (${form.email})`}
+            </p>
+          )}
+
+          <div className="flex justify-end pt-6">
             <button
               type="button"
-              onClick={prevStep}
-              className="px-6 py-2 h-fit bg-gray-700 text-white text-sm rounded-lg hover:bg-[#45A049] transition-colors flex items-center gap-2"
+              onClick={handleNextStep}
+              className={`px-6 py-2 h-fit ${
+                isOtpVerified ? "bg-[#4CAF50] hover:bg-[#45A049]" : "bg-gray-400 cursor-not-allowed"
+              } text-white text-sm rounded-lg transition-colors`}
+              disabled={!isOtpVerified}
             >
-              <ChevronLeft className="w-4 h-4" />
-              <span>Back</span>
-            </button>
-            <button
-              type="submit"
-              onClick={onSubmitClick}
-              disabled={isVerifying}
-              className="px-6 py-2 h-fit bg-[#4CAF50] text-white text-sm rounded-lg hover:bg-[#45A049] transition-colors disabled:bg-gray-400"
-            >
-              {isVerifying ? "Verifying..." : showOtpInput ? "Verify OTP" : "Complete Registration"}
+              {isOtpVerified ? "Next Step" : "Verify OTP to Continue"}
             </button>
           </div>
         </form>

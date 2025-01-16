@@ -39,67 +39,36 @@ const RegistrationPage = () => {
     return mobileRegex.test(mobile);
   };
 
-  const isValidAge = (dateOfBirth: string | Date): boolean => {
-    try {
-      const dob = dateOfBirth instanceof Date ? dateOfBirth : new Date(dateOfBirth);
-      const today = new Date();
-
-      if (isNaN(dob.getTime())) return false;
-
-      const yearDiff = today.getFullYear() - dob.getFullYear();
-      const monthDiff = today.getMonth() - dob.getMonth();
-      const dayDiff = today.getDate() - dob.getDate();
-
-      let age = yearDiff;
-      if (monthDiff < 0 || (monthDiff === 0 && dayDiff < 0)) {
-        age--;
-      }
-
-      return age >= 5;
-    } catch (error) {
-      console.error("Error calculating age:", error);
-      return false;
-    }
-  };
-
   const validateStep = () => {
     switch (step) {
       case 1:
-        if (
-          !form.firstName ||
-          !form.lastName ||
-          !form.email ||
-          !form.mobile ||
-          !form.gender ||
-          !form.dateOfBirth ||
-          !form.country ||
-          !form.state ||
-          !form.city ||
-          !form.occupation
-        ) {
+        if (!form.gender || !form.mobile || !form.email) {
           toast.error("Please fill in all required fields");
-          return false;
-        }
-        if (!isValidEmail(form.email)) {
-          toast.error("Please enter a valid email address");
           return false;
         }
         if (!isValidMobile(form.mobile)) {
           toast.error("Please enter a valid 10-digit mobile number");
           return false;
         }
-        if (!isValidAge(form.dateOfBirth)) {
-          toast.error("You must be at least 10 years old to participate");
-          return false;
-        }
         break;
       case 2:
-        if (!form.raceCategory || !form.tShirtSize || !form.emergencyContactName || !form.emergencyContactNumber) {
+        if (
+          !form.firstName ||
+          !form.lastName ||
+          !form.dateOfBirth ||
+          !form.country ||
+          !form.state ||
+          !form.city ||
+          !form.occupation ||
+          !form.selfie ||
+          !form.raceCategory ||
+          !form.tShirtSize
+        ) {
           toast.error("Please fill in all required fields");
           return false;
         }
-        if (!isValidMobile(form.emergencyContactNumber)) {
-          toast.error("Please enter a valid emergency contact number");
+        if (!isValidEmail(form.email)) {
+          toast.error("Please enter a valid email address");
           return false;
         }
         break;
@@ -110,7 +79,7 @@ const RegistrationPage = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validateStep()) return;
-  
+
     try {
       const { data, error } = await supabase
         .from("registrations")
@@ -137,27 +106,13 @@ const RegistrationPage = () => {
           },
         ])
         .select();
-  
+
       if (error) {
         console.error("Supabase error:", error);
         throw new Error(error.message);
       }
-  
-      // Send confirmation email
-      const emailResponse = await fetch('/api/send-email', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          userData: data[0],
-        }),
-      });
-  
-      if (!emailResponse.ok) {
-        console.error('Failed to send confirmation email');
-      }
-  
+
+      console.log("Registration data:", data);
       toast.success("Registration successful!");
       router.push("/registration/success");
     } catch (error) {
@@ -165,7 +120,6 @@ const RegistrationPage = () => {
       toast.error(`Failed to submit registration: ${error instanceof Error ? error.message : "Unknown error"}`);
     }
   };
-  
 
   const renderStep = () => {
     if (step < 1) setStep(1);
@@ -173,9 +127,9 @@ const RegistrationPage = () => {
 
     switch (step) {
       case 1:
-        return <PersonalInformationForm nextStep={nextStep} />;
+        return <MarathonDetailsForm nextStep={nextStep} />;
       case 2:
-        return <MarathonDetailsForm prevStep={prevStep} handleSubmit={handleSubmit} />;
+        return <PersonalInformationForm prevStep={prevStep} handleSubmit={handleSubmit} />;
       default:
         return null;
     }
@@ -202,7 +156,7 @@ const RegistrationPage = () => {
                 </div>
                 <div className="ml-4">
                   <p className={`${step >= i ? "text-[#4CAF50]" : "text-gray-400"} font-bold`}>Step {i}</p>
-                  <p className="text-sm text-gray-300">{i === 1 ? "Personal Details" : "Race Details"}</p>
+                  <p className="text-sm text-gray-300">{i === 1 ? "Race Details" : "Personal Details"}</p>
                 </div>
               </div>
             ))}
