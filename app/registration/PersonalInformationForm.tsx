@@ -12,7 +12,6 @@ import { getCountries } from "@/src/data/locations";
 import { validateName } from "@/utils/validation";
 import { validatePostalCode, getPostalCodeFormat } from "@/utils/postalCodes";
 import { bloodGroups } from "@/src/data/bloodGroups";
-import { ImageUpload } from "@/components/image-upload";
 
 interface PersonalInformationFormProps {
   prevStep: () => void;
@@ -21,11 +20,7 @@ interface PersonalInformationFormProps {
 
 const PersonalInformationForm: React.FC<PersonalInformationFormProps> = ({ prevStep, handleSubmit }) => {
   const { form: formData, handleChange, setForm } = useRegistrationStore();
-  const [isLoadingAddress, setIsLoadingAddress] = useState(false);
-
-  const validateEmail = (email: string) => {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-  };
+  const [isLoading, setIsLoading] = useState(false); // Renamed from isLoadingAddress
 
   const validateMobile = (mobile: string) => {
     return /^[6-9]\d{9}$/.test(mobile);
@@ -41,9 +36,8 @@ const PersonalInformationForm: React.FC<PersonalInformationFormProps> = ({ prevS
       return;
     }
 
-    // Only fetch address for Indian pincodes
     if (formData.country === "India" && pincode.length === 6) {
-      setIsLoadingAddress(true);
+      setIsLoading(true);
       try {
         const addressData = await fetchAddressFromPincode(pincode);
         if (addressData) {
@@ -56,15 +50,9 @@ const PersonalInformationForm: React.FC<PersonalInformationFormProps> = ({ prevS
         setForm("state", "");
         setForm("city", "");
       } finally {
-        setIsLoadingAddress(false);
+        setIsLoading(false);
       }
     }
-  };
-
-  const getMaxDate = () => {
-    const date = new Date();
-    date.setFullYear(date.getFullYear() - 5);
-    return date.toISOString().split("T")[0];
   };
 
   const getRaceCategories = (gender: "MALE" | "FEMALE") => {
@@ -75,23 +63,6 @@ const PersonalInformationForm: React.FC<PersonalInformationFormProps> = ({ prevS
     <BambooFrame>
       <form onSubmit={handleSubmit}>
         <div className="grid grid-cols-2 gap-y-2 gap-x-20">
-          {/* Add Race Category and T-Shirt Size at the top */}
-          <RenderField
-            label="Race Category / दौड़ श्रेणी"
-            name="raceCategory"
-            type="select"
-            placeholder="Select Category"
-            options={formData.gender ? getRaceCategories(formData.gender) : []}
-            disabled={!formData.gender}
-          />
-          <RenderField
-            label="T-Shirt Size / टी-शर्ट का आकार"
-            name="tShirtSize"
-            type="select"
-            placeholder="Select Size"
-            options={["S", "M", "L", "XL", "XXL"]}
-          />
-
           <RenderField
             label="First Name / पहला नाम"
             name="firstName"
@@ -108,14 +79,7 @@ const PersonalInformationForm: React.FC<PersonalInformationFormProps> = ({ prevS
             validateInput={validateName}
             errorMessage="Please enter a valid name (letters only)"
           />
-          <RenderField
-            label="Email / ईमेल"
-            name="email"
-            type="email"
-            placeholder="Enter your email"
-            validateInput={validateEmail}
-            errorMessage="Please enter a valid email address"
-          />
+
           <RenderField label="Date of Birth / जन्म तिथि" name="dateOfBirth" type="date" placeholder="" />
           <RenderField label="Country / देश" name="country" type="select" placeholder="Select Country" options={getCountries()} />
           <RenderField
@@ -132,7 +96,7 @@ const PersonalInformationForm: React.FC<PersonalInformationFormProps> = ({ prevS
             name="state"
             type="text"
             placeholder="Enter pincode to auto-fill"
-            disabled={true}
+            disabled={isLoading} // Use isLoading here
             errorMessage="Please enter pincode first"
             required={true}
           />
@@ -145,9 +109,54 @@ const PersonalInformationForm: React.FC<PersonalInformationFormProps> = ({ prevS
             errorMessage="Please enter pincode first"
             required={true}
           />
+          <RenderField
+            label="Race Category / दौड़ श्रेणी"
+            name="raceCategory"
+            type="select"
+            placeholder="Select Category"
+            options={formData.gender ? getRaceCategories(formData.gender) : []}
+            disabled={!formData.gender}
+          />
+          <RenderField
+            label="T-Shirt Size / टी-शर्ट का आकार"
+            name="tShirtSize"
+            type="select"
+            placeholder="Select Size"
+            options={["S", "M", "L", "XL", "XXL"]}
+          />
           <RenderField label="Occupation / पेशा" name="occupation" type="select" placeholder="Select Occupation" options={occupations} />
           <RenderField label="Blood Group / रक्त समूह" name="bloodGroup" type="select" placeholder="Select Blood Group" options={bloodGroups} />
-          <ImageUpload />
+
+          <RenderField
+            label="Emergency Contact Name / आपातकालीन संपर्क नाम"
+            name="emergencyContactName"
+            type="text"
+            placeholder="Enter emergency contact name"
+            validateInput={validateName}
+            errorMessage="Please enter a valid name"
+          />
+          <RenderField
+            label="Emergency Contact Number / आपातकालीन संपर्क नंबर"
+            name="emergencyContactNumber"
+            type="tel"
+            placeholder="Enter emergency contact number"
+            validateInput={validateMobile}
+            errorMessage="Please enter a valid mobile number"
+          />
+
+          {!formData.isFromBastar && (
+            <div className="col-span-2 mt-4">
+              <label className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  checked={formData.needsAccommodation}
+                  onChange={(e) => setForm("needsAccommodation", e.target.checked)}
+                  className="rounded text-[#4CAF50] focus:ring-[#4CAF50]"
+                />
+                <span className="text-white text-sm">Do you need accommodation? / क्या आपको ठहरने की व्यवस्था चाहिए?</span>
+              </label>
+            </div>
+          )}
         </div>
 
         <div className="flex justify-between items-center mt-6">

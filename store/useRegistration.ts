@@ -25,6 +25,8 @@ const defaultFormState: RegistrationForm = {
   bloodGroup: "",
   selfie: null,
   otp: "",
+  isFromBastar: false,
+  needsAccommodation: false,
 };
 
 interface RegistrationStore {

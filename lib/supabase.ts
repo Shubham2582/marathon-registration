@@ -30,7 +30,7 @@ supabase
 (async () => {
   console.log("Testing Supabase connection...");
   try {
-    const { data, error, count } = await supabase.from("registrations").select("*", { count: "exact", head: true });
+    const { error, count } = await supabase.from("registrations").select("*", { count: "exact", head: true });
 
     if (error) {
       console.error("Supabase connection test failed:", error);

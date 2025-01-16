@@ -1,6 +1,23 @@
 import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
 
+interface MarathonDetails {
+  otp?: string;
+  raceCategory?: string;
+  tShirtSize?: string;
+}
+
+interface PersonalInfo {
+  firstName: string;
+  lastName: string;
+  email: string;
+}
+
+interface EmailUserData {
+  personal_info: PersonalInfo;
+  marathon_details: MarathonDetails;
+}
+
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST,
   port: parseInt(process.env.SMTP_PORT || "587"),
@@ -11,7 +28,7 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-const getEmailTemplate = (userData: any) => {
+const getEmailTemplate = (userData: EmailUserData) => {
   // Check if this is an OTP email
   if (userData.marathon_details.otp) {
     return `
@@ -72,7 +89,7 @@ const getEmailTemplate = (userData: any) => {
 
 export async function POST(request: Request) {
   try {
-    const { userData } = await request.json();
+    const { userData }: { userData: EmailUserData } = await request.json();
 
     const mailOptions = {
       from: `"Abujhmad Marathon" <${process.env.SMTP_USER}>`,

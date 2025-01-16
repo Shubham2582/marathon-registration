@@ -126,39 +126,6 @@ const MarathonDetailsForm: React.FC<MarathonDetailsFormProps> = ({ nextStep }) =
     <BambooFrame>
       <div className="space-y-4">
         <form className="space-y-8">
-          {/* Gender selection */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-2">
-              <div className="space-y-1">
-                <label className="block text-white text-sm font-medium">Gender* / लिंग</label>
-                <div className="flex gap-4">
-                  <label className="flex items-center">
-                    <input
-                      type="radio"
-                      name="gender"
-                      value="MALE"
-                      checked={form.gender === "MALE"}
-                      onChange={handleGenderChange}
-                      className="mr-2 text-[#4CAF50] focus:ring-[#4CAF50]"
-                    />
-                    <span className="text-white text-sm">Male / पुरुष</span>
-                  </label>
-                  <label className="flex items-center">
-                    <input
-                      type="radio"
-                      name="gender"
-                      value="FEMALE"
-                      checked={form.gender === "FEMALE"}
-                      onChange={handleGenderChange}
-                      className="mr-2 text-[#4CAF50] focus:ring-[#4CAF50]"
-                    />
-                    <span className="text-white text-sm">Female / महिला</span>
-                  </label>
-                </div>
-              </div>
-            </div>
-          </div>
-
           {/* Contact Information */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
@@ -181,6 +148,50 @@ const MarathonDetailsForm: React.FC<MarathonDetailsFormProps> = ({ nextStep }) =
                 errorMessage="Please enter a valid email address"
               />
             </div>
+
+            {/* Gender selection - Updated UI */}
+            <div className="col-span-2">
+              <div className="space-y-2">
+                <label className="block text-white text-sm font-medium mb-2">Gender / लिंग *</label>
+                <div className="flex gap-8">
+                  <label className="flex items-center">
+                    <input
+                      type="radio"
+                      name="gender"
+                      value="MALE"
+                      checked={form.gender === "MALE"}
+                      onChange={handleGenderChange}
+                      className="mr-2 text-[#4CAF50] focus:ring-[#4CAF50]"
+                    />
+                    <span className="text-white text-sm whitespace-nowrap">Male / पुरुष</span>
+                  </label>
+                  <label className="flex items-center">
+                    <input
+                      type="radio"
+                      name="gender"
+                      value="FEMALE"
+                      checked={form.gender === "FEMALE"}
+                      onChange={handleGenderChange}
+                      className="mr-2 text-[#4CAF50] focus:ring-[#4CAF50]"
+                    />
+                    <span className="text-white text-sm whitespace-nowrap">Female / महिला</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Add Bastar Checkbox */}
+          <div className="space-y-2">
+            <label className="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                checked={form.isFromBastar}
+                onChange={(e) => setForm("isFromBastar", e.target.checked)}
+                className="rounded text-[#4CAF50] focus:ring-[#4CAF50]"
+              />
+              <span className="text-white text-sm">Are you from Bastar? / क्या आप बस्तर से हैं?</span>
+            </label>
           </div>
 
           <div

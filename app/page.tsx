@@ -74,7 +74,7 @@ const RegistrationPage = () => {
         };
 
         const missingFields = Object.entries(requiredFields)
-          .filter(([_, value]) => !value)
+          .filter(([value]) => !value)
           .map(([key]) => key);
 
         if (missingFields.length > 0) {
@@ -132,6 +132,8 @@ const RegistrationPage = () => {
         emergency_contact_name: form.emergencyContactName || null,
         emergency_contact_number: form.emergencyContactNumber || null,
         blood_group: form.bloodGroup || null,
+        is_from_bastar: form.isFromBastar,
+        needs_accommodation: form.needsAccommodation,
       };
 
       console.log("Sending data to Supabase:", registrationData);

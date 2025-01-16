@@ -16,6 +16,9 @@ export interface RegistrationForm {
   bloodGroup: BloodGroup | "";
   selfie: File | null;
 
+  isFromBastar: boolean;
+  needsAccommodation: boolean;
+
   paymentMethod: "UPI" | "NETBANKING" | "CARD";
 
   // --- CARD PAYMENT ---
