@@ -61,8 +61,8 @@ const PersonalInformationForm: React.FC<PersonalInformationFormProps> = ({ prevS
 
   return (
     <BambooFrame>
-      <form onSubmit={handleSubmit}>
-        <div className="grid grid-cols-2 gap-y-2 gap-x-20">
+      <form onSubmit={handleSubmit} className="pb-5">
+        <div className="grid grid-cols-2 gap-y-2 md:gap-x-20 gap-x-4">
           <RenderField
             label="First Name / पहला नाम"
             name="firstName"
@@ -163,12 +163,12 @@ const PersonalInformationForm: React.FC<PersonalInformationFormProps> = ({ prevS
           <button
             type="button"
             onClick={prevStep}
-            className="px-6 py-2 bg-gray-700 text-white text-sm rounded-lg hover:bg-gray-600 transition-colors flex items-center gap-2"
+            className="md:px-6 md:py-2 px-4 py-1 bg-gray-700 text-white text-sm rounded-lg hover:bg-gray-600 transition-colors flex items-center gap-2"
           >
             <ChevronLeft className="w-4 h-4" />
             Back
           </button>
-          <button type="submit" className="px-6 py-2 bg-[#4CAF50] text-white text-sm rounded-lg hover:bg-[#45A049] transition-colors">
+          <button type="submit" className="md:px-6 md:py-2 px-4 py-1 bg-[#4CAF50] text-white text-sm rounded-lg hover:bg-[#45A049] transition-colors">
             Complete Registration
           </button>
         </div>

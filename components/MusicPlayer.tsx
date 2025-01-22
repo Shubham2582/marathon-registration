@@ -78,7 +78,7 @@ export const MusicPlayer = () => {
   return (
     <button
       onClick={handleToggleMusic}
-      className="fixed bottom-4 right-4 z-50 p-3 rounded-full bg-gray-900/50 backdrop-blur border border-gray-700 hover:bg-gray-800/50 transition-colors"
+      className="fixed md:bottom-4 md:left-4 bottom-2 left-2 z-50 p-3 rounded-full bg-gray-900/50 backdrop-blur border border-gray-700 hover:bg-gray-800/50 transition-colors"
       title={isPlaying ? "Mute" : "Play Music"}
     >
       {!isPlaying ? <VolumeX className="w-6 h-6 text-gray-400" /> : <Volume2 className="w-6 h-6 text-[#4CAF50]" />}

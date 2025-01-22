@@ -78,13 +78,13 @@ export const RenderField: React.FC<RenderFieldProps> = ({
   const isFieldEmpty = required && !value;
   const isFieldInvalid = isFieldEmpty || (value && validateInput && !validateInput(value));
   const showFieldError = showError && isFieldInvalid;
-  const commonClasses = `w-full bg-gray-900/50 backdrop-blur-2xl rounded-lg px-3 py-2 text-white text-sm 
+  const commonClasses = `w-full bg-gray-900/50 backdrop-blur-2xl rounded-lg md:px-3 md:py-2 px-2.5 py-1.5 text-white md:text-sm text-xs 
     placeholder-gray-300 focus:outline-none focus:ring-1 focus:ring-[#4CAF50] border border-gray-700
     ${disabled ? "cursor-not-allowed bg-gray-800/50" : ""}`;
 
   return (
     <div>
-      <label className="block text-white text-sm font-medium mb-1">
+      <label className="block text-white md:text-sm text-xs font-medium mb-1">
         {label}
         {required && "*"}
       </label>

@@ -5,6 +5,7 @@ import { BambooFrame } from "@/components/ui/bamboo-frame";
 import { useRegistrationStore } from "@/store/useRegistration";
 import { RenderField } from "@/components/render-field";
 import { toast } from "react-hot-toast";
+import { cn } from "@/lib/utils";
 import { toggleMusic } from "@/components/MusicPlayer";
 
 interface MarathonDetailsFormProps {
@@ -12,7 +13,9 @@ interface MarathonDetailsFormProps {
   handleSubmit?: (e: React.FormEvent) => Promise<void>;
 }
 
-const MarathonDetailsForm: React.FC<MarathonDetailsFormProps> = ({ nextStep }) => {
+const MarathonDetailsForm: React.FC<MarathonDetailsFormProps> = ({
+  nextStep,
+}) => {
   const { form, setForm } = useRegistrationStore();
   const [showOtpInput, setShowOtpInput] = useState(false);
   const [otp, setOtp] = useState("");
@@ -76,7 +79,9 @@ const MarathonDetailsForm: React.FC<MarathonDetailsFormProps> = ({ nextStep }) =
         throw new Error("Failed to send OTP email");
       }
 
-      toast.success(`OTP sent to your ${otpMethod === "email" ? "email" : "mobile"}`);
+      toast.success(
+        `OTP sent to your ${otpMethod === "email" ? "email" : "mobile"}`
+      );
       setShowOtpInput(true);
       startCooldown();
     } catch (error) {
@@ -107,7 +112,9 @@ const MarathonDetailsForm: React.FC<MarathonDetailsFormProps> = ({ nextStep }) =
     }
   };
 
-  const handleOtpChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleOtpChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     const value = e.target.value;
     setForm("otp", value);
     setOtp(value);
@@ -181,94 +188,161 @@ const MarathonDetailsForm: React.FC<MarathonDetailsFormProps> = ({ nextStep }) =
   return (
     <BambooFrame>
       <div className="space-y-4">
-        <form className="space-y-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-2">
-              <RenderField
-                label="Mobile Number / मोबाइल नंबर"
-                name="mobile"
-                type="tel"
-                placeholder="Enter your mobile number"
-                validateInput={validateMobile}
-                errorMessage="Please enter a valid 10-digit mobile number"
-              />
-            </div>
-            <div className="space-y-2">
-              <RenderField
-                label="Email / ईमेल"
-                name="email"
-                type="email"
-                placeholder="Enter your email"
-                validateInput={validateEmail}
-                errorMessage="Please enter a valid email address"
-              />
-            </div>
+        <form className="md:space-y-8 space-y-4 md:pb-0 pb-4">
+          {/* Contact Information */}
+          <div className="md:grid flex md:grid-cols-2 flex-col md:gap-6 gap-3">
+            <RenderField
+              label="Mobile Number / मोबाइल नंबर"
+              name="mobile"
+              type="tel"
+              placeholder="Enter your mobile number"
+              validateInput={validateMobile}
+              errorMessage="Please enter a valid 10-digit mobile number"
+            />
+            <RenderField
+              label="Email / ईमेल"
+              name="email"
+              type="email"
+              placeholder="Enter your email"
+              validateInput={validateEmail}
+              errorMessage="Please enter a valid email address"
+            />
 
             <div className="col-span-2">
-              <div className="space-y-2">
-                <label className="block text-white text-sm font-medium mb-2">Gender / लिंग *</label>
-                <div className="flex gap-8">
-                  <label className="flex items-center">
-                    <input
-                      type="radio"
-                      name="gender"
-                      value="MALE"
-                      checked={form.gender === "MALE"}
-                      onChange={handleGenderChange}
-                      className="mr-2 text-[#4CAF50] focus:ring-[#4CAF50]"
-                    />
-                    <span className="text-white text-sm whitespace-nowrap">Male / पुरुष</span>
-                  </label>
-                  <label className="flex items-center">
-                    <input
-                      type="radio"
-                      name="gender"
-                      value="FEMALE"
-                      checked={form.gender === "FEMALE"}
-                      onChange={handleGenderChange}
-                      className="mr-2 text-[#4CAF50] focus:ring-[#4CAF50]"
-                    />
-                    <span className="text-white text-sm whitespace-nowrap">Female / महिला</span>
-                  </label>
-                </div>
+              <label className="block text-white md:text-sm text-xs font-medium mb-2">
+                Gender / लिंग *
+              </label>
+              <div className="flex md:gap-8 gap-4">
+                <label className="flex items-center">
+                  <input
+                    type="radio"
+                    name="gender"
+                    value="MALE"
+                    checked={form.gender === "MALE"}
+                    onChange={handleGenderChange}
+                    className="mr-2 text-[#4CAF50] focus:ring-[#4CAF50]"
+                  />
+                  <span className="text-white md:text-sm text-xs whitespace-nowrap">
+                    Male / पुरुष
+                  </span>
+                </label>
+                <label className="flex items-center">
+                  <input
+                    type="radio"
+                    name="gender"
+                    value="FEMALE"
+                    checked={form.gender === "FEMALE"}
+                    onChange={handleGenderChange}
+                    className="mr-2 text-[#4CAF50] focus:ring-[#4CAF50]"
+                  />
+                  <span className="text-white md:text-sm text-xs whitespace-nowrap">
+                    Female / महिला
+                  </span>
+                </label>
               </div>
             </div>
           </div>
 
-          <div className="space-y-2">
-            <label className="flex items-center space-x-2">
-              <input
-                type="checkbox"
-                checked={form.isFromBastar}
-                onChange={(e) => setForm("isFromBastar", e.target.checked)}
-                className="rounded text-[#4CAF50] focus:ring-[#4CAF50]"
-              />
-              <span className="text-white text-sm">Are you from Bastar? / क्या आप बस्तर से हैं?</span>
-            </label>
-          </div>
+          {/* Add Bastar Checkbox */}
+          <label className="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              checked={form.isFromBastar}
+              onChange={(e) => setForm("isFromBastar", e.target.checked)}
+              className="rounded text-[#4CAF50] focus:ring-[#4CAF50]"
+            />
+            <span className="text-white md:text-sm text-xs">
+              Are you from Bastar? / क्या आप बस्तर से हैं?
+            </span>
+          </label>
 
           <div
-            className={`fixed inset-x-0 top-20 z-50 transform transition-all duration-300 ${
-              showOtpInput ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-full pointer-events-none"
-            }`}
+            className={cn(
+              "absolute w-screen h-screen flex items-center justify-center -top-24 left-0 bg-black/40 backdrop-blur",
+              showOtpInput
+                ? "opacity-100 translate-y-0"
+                : "opacity-0 -translate-y-full pointer-events-none"
+            )}
           >
-            <div className="mx-auto max-w-md px-4">
-              <BambooFrame>
-                <div className="relative space-y-4">
-                  <div className="absolute right-2 top-2">
-                    <button onClick={() => setShowOtpInput(false)} className="text-gray-400 hover:text-white"></button>
+            <div
+              className={`inset-0 transform transition-all  duration-300 ${
+                showOtpInput
+                  ? "opacity-100 translate-y-0"
+                  : "opacity-0 -translate-y-full pointer-events-none"
+              }`}
+            >
+              <div className="mx-auto px-4">
+                <BambooFrame>
+                  <div className="relative space-y-4">
+                    <div className="absolute right-2 top-2">
+                      <button
+                        onClick={() => setShowOtpInput(false)}
+                        className="text-gray-400 hover:text-white"
+                      ></button>
+                    </div>
+
+                    <div className="bg-gray-900/50 backdrop-blur p-6 rounded-lg border border-gray-700">
+                      <RenderField
+                        label="Enter OTP / ओटीपी दर्ज करें"
+                        name="otp"
+                        type="text"
+                        placeholder="Enter 4-digit OTP"
+                        required
+                        onChange={handleOtpChange}
+                        errorMessage="Please enter valid OTP"
+                      />
+
+                      <button
+                        type="button"
+                        onClick={verifyOTP}
+                        disabled={isVerifying}
+                        className="w-full mt-4 px-10 md:py-2 py-1.5 bg-[#4CAF50] text-white md:text-sm text-xs rounded-lg 
+                        hover:bg-[#45A049] transition-colors disabled:bg-gray-600"
+                      >
+                        {isVerifying ? "Verifying..." : "Verify OTP"}
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={generateAndSendOTP}
+                        className="w-full mt-3 md:text-sm text-xs text-[#4CAF50] hover:text-[#45A049]"
+                      >
+                        Resend OTP
+                      </button>
+                    </div>
                   </div>
-                  {renderOTPModal()}
-                </div>
-              </BambooFrame>
+                </BambooFrame>
+              </div>
             </div>
           </div>
 
-          {!showOtpInput && renderSendOTPButtons()}
+          {!showOtpInput && (
+            <div className="flex gap-4 justify-center mt-4">
+              <button
+                type="button"
+                onClick={() => startOtpProcess("whatsapp")}
+                disabled={!form.mobile}
+                className="md:px-6 md:py-2 px-3 py-1 md:text-base text-sm bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:bg-gray-600 disabled:cursor-not-allowed"
+              >
+                Send OTP on WhatsApp
+              </button>
+              <button
+                type="button"
+                onClick={() => startOtpProcess("email")}
+                disabled={!form.email}
+                className="md:px-6 md:py-2 px-4 py-1 md:text-base text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-600 disabled:cursor-not-allowed"
+              >
+                Send OTP on Email
+              </button>
+            </div>
+          )}
 
           {showOtpInput && (
-            <p className="text-center text-sm text-gray-300 mb-4">
-              OTP sent via {otpMethod === "whatsapp" ? `WhatsApp (${form.mobile})` : `Email (${form.email})`}
+            <p className="text-center md:text-sm text-xs text-gray-300 mb-4">
+              OTP sent via{" "}
+              {otpMethod === "whatsapp"
+                ? `WhatsApp (${form.mobile})`
+                : `Email (${form.email})`}
             </p>
           )}
 

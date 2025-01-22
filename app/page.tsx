@@ -137,7 +137,10 @@ const RegistrationPage = () => {
 
       console.log("Sending data to Supabase:", registrationData);
 
-      const { data, error } = await supabase.from("registrations").insert([registrationData]).select("id");
+      const { data, error } = await supabase
+        .from("registrations")
+        .insert([registrationData])
+        .select("id");
 
       if (error) {
         console.error("Supabase insertion error:", error);
@@ -175,11 +178,15 @@ const RegistrationPage = () => {
       }
 
       console.log("Registration successful, ID:", data?.[0]?.id);
-      toast.success("Registration successful! Check your email for confirmation.");
+      toast.success(
+        "Registration successful! Check your email for confirmation."
+      );
       router.push("/registration/success");
     } catch (error) {
       console.error("Full error object:", error);
-      toast.error(error instanceof Error ? error.message : "Registration failed");
+      toast.error(
+        error instanceof Error ? error.message : "Registration failed"
+      );
     }
   };
 
@@ -191,50 +198,84 @@ const RegistrationPage = () => {
       case 1:
         return <MarathonDetailsForm nextStep={nextStep} />;
       case 2:
-        return <PersonalInformationForm prevStep={prevStep} handleSubmit={handleSubmit} />;
+        return (
+          <PersonalInformationForm
+            prevStep={prevStep}
+            handleSubmit={handleSubmit}
+          />
+        );
       default:
         return null;
     }
   };
 
   return (
-    <div className="relative">
-      <Image src="/bg-image.jpeg" alt="Jungle Background" fill className="hidden md:block w-full object-cover" priority />
+    <div className="relative pt-20">
+      <Image
+        src="/Firefly.png"
+        alt="Jungle Background"
+        fill
+        className="absolute w-screen min-h-screen object-cover md:block hidden"
+        priority
+      />
+      <Image
+        src="/mobile/background.png"
+        alt="Jungle Background"
+        fill
+        className="absolute w-screen h-screen top-0 object-cover block md:hidden"
+        priority
+      />
 
-      {/* <div className="absolute top-8 w-full text-center z-10">
-        <h1
-          className="text-4xl mt-10 md:text-5xl font-bold text-black drop-shadow-[0_2px_2px_rgba(255,255,255,0.5)] 
-          font-serif tracking-wider"
-        >
-          Abujhmad
-        </h1>
-        <h1
-          className="text-4xl md:text-5xl font-bold text-black drop-shadow-[0_2px_2px_rgba(255,255,255,0.5)] 
-          font-serif tracking-wider"
-        >
-          Marathon
-        </h1>
-      </div> */}
+      <div className="relative md:w-full mx-auto flex flex-col flex-grow items-center justify-center md:px-4 sm:px-12">
+        <Image
+          src="/mobile/box.png"
+          height={700}
+          width={400}
+          alt="Box"
+          className="absolute w-full h-full object-cover object-top block md:hidden"
+          priority
+        />
+        <div className="relative h-36 w-2/3 z-10 sm:mt-10 mt-7 flex justify-center items-center">
+          <Image
+            src="/mobile/header-background.png"
+            height={300}
+            width={100}
+            alt="Box"
+            className="absolute w-full h-full object-contain block md:hidden"
+            priority
+          />
+          <h2 className="z-10 md:hidden sm:text-3xl text-2xl font-bold text-center text-white">Abujmaad<br/>Registration</h2>
+        </div>
 
-      <div className="relative min-h-screen flex flex-col items-center justify-center py-12 px-4">
-        <div className="w-full max-w-2xl mx-auto mt-32 space-y-5 p-2">
-          <div className="flex justify-between p-4 w-full rounded-xl bg-gray-900/50 backdrop-blur">
+        <div className="w-full max-w-2xl mx-auto md:mt- space-y-5 p-2 z-10">
+          <div className="flex justify-between p-4 w-full rounded-xl md:bg-gray-900/50 md:backdrop-blur">
             {[1, 2].map((i) => (
               <div key={i} className="flex items-center">
-                <div className={`w-10 h-10 rounded-full ${step >= i ? "bg-[#4CAF50]" : "bg-gray-600"} flex items-center justify-center`}>
+                <div
+                  className={`w-10 h-10 rounded-full ${
+                    step >= i ? "bg-[#4CAF50]" : "bg-gray-600"
+                  } flex items-center justify-center`}
+                >
                   <span className="text-lg font-semibold text-white">{i}</span>
                 </div>
                 <div className="ml-4">
-                  <p className={`${step >= i ? "text-[#4CAF50]" : "text-gray-400"} font-bold`}>Step {i}</p>
-                  <p className="text-sm text-gray-300">{i === 1 ? "Race Details" : "Personal Details"}</p>
+                  <p
+                    className={`${
+                      step >= i ? "text-[#4CAF50]" : "text-gray-400"
+                    } font-bold`}
+                  >
+                    Step {i}
+                  </p>
+                  <p className="text-sm text-gray-300">
+                    {i === 1 ? "Race Details" : "Personal Details"}
+                  </p>
                 </div>
               </div>
             ))}
           </div>
 
-          <div className="relative">
-            <div className="absolute inset-0 bg-[url('/bamboo-frame.png')] bg-contain bg-no-repeat" />
-            <div className="relative z-10">{renderStep()}</div>
+          <div className="px-6">
+            <div className="z-10">{renderStep()}</div>
           </div>
         </div>
       </div>
