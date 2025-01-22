@@ -20,7 +20,7 @@ interface PersonalInformationFormProps {
 
 const PersonalInformationForm: React.FC<PersonalInformationFormProps> = ({ prevStep, handleSubmit }) => {
   const { form: formData, handleChange, setForm } = useRegistrationStore();
-  const [isLoading, setIsLoading] = useState(false); // Renamed from isLoadingAddress
+  const [isLoading, setIsLoading] = useState(false);
 
   const validateMobile = (mobile: string) => {
     return /^[6-9]\d{9}$/.test(mobile);
@@ -96,7 +96,7 @@ const PersonalInformationForm: React.FC<PersonalInformationFormProps> = ({ prevS
             name="state"
             type="text"
             placeholder="Enter pincode to auto-fill"
-            disabled={isLoading} // Use isLoading here
+            disabled={isLoading}
             errorMessage="Please enter pincode first"
             required={true}
           />
@@ -125,16 +125,6 @@ const PersonalInformationForm: React.FC<PersonalInformationFormProps> = ({ prevS
             options={["S", "M", "L", "XL", "XXL"]}
           />
           <RenderField label="Occupation / पेशा" name="occupation" type="select" placeholder="Select Occupation" options={occupations} />
-          <RenderField label="Blood Group / रक्त समूह" name="bloodGroup" type="select" placeholder="Select Blood Group" options={bloodGroups} />
-
-          <RenderField
-            label="Emergency Contact Name / आपातकालीन संपर्क नाम"
-            name="emergencyContactName"
-            type="text"
-            placeholder="Enter emergency contact name"
-            validateInput={validateName}
-            errorMessage="Please enter a valid name"
-          />
           <RenderField
             label="Emergency Contact Number / आपातकालीन संपर्क नंबर"
             name="emergencyContactNumber"
@@ -144,8 +134,18 @@ const PersonalInformationForm: React.FC<PersonalInformationFormProps> = ({ prevS
             errorMessage="Please enter a valid mobile number"
           />
 
+          <RenderField
+            label="Emergency Contact Name / आपातकालीन संपर्क नाम"
+            name="emergencyContactName"
+            type="text"
+            placeholder="Enter emergency contact name"
+            validateInput={validateName}
+            errorMessage="Please enter a valid name"
+          />
+          <RenderField label="Blood Group / रक्त समूह" name="bloodGroup" type="select" placeholder="Select Blood Group" options={bloodGroups} />
+
           {!formData.isFromBastar && (
-            <div className="col-span-2 mt-4">
+            <div className="mt-2">
               <label className="flex items-center space-x-2">
                 <input
                   type="checkbox"

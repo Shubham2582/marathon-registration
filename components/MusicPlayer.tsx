@@ -1,18 +1,46 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { Volume2, VolumeX } from "lucide-react";
 
 interface WebKit {
   webkitAudioContext: typeof AudioContext;
 }
 
+const audioRef = { current: null as HTMLAudioElement | null };
+const audioContextRef = { current: null as AudioContext | null };
+const isPlayingRef = { current: false };
+
+export const toggleMusic = async () => {
+  if (!audioRef.current) return;
+
+  try {
+    if (isPlayingRef.current) {
+      audioRef.current.pause();
+      isPlayingRef.current = false;
+    } else {
+      if (audioContextRef.current?.state === "suspended") {
+        await audioContextRef.current.resume();
+      }
+      await audioRef.current.play();
+      isPlayingRef.current = true;
+    }
+    window.dispatchEvent(new CustomEvent("musicStateChange", { detail: isPlayingRef.current }));
+  } catch (error) {
+    console.error("Music toggle error:", error);
+  }
+};
+
 export const MusicPlayer = () => {
   const [isPlaying, setIsPlaying] = useState(false);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-  const audioContextRef = useRef<AudioContext | null>(null);
 
   useEffect(() => {
+    const handleMusicStateChange = (e: CustomEvent) => {
+      setIsPlaying(e.detail);
+    };
+
+    window.addEventListener("musicStateChange", handleMusicStateChange as EventListener);
+
     const handleFirstInteraction = async () => {
       try {
         if (!audioRef.current) {
@@ -34,6 +62,7 @@ export const MusicPlayer = () => {
     document.addEventListener("click", handleFirstInteraction, { once: true });
 
     return () => {
+      window.removeEventListener("musicStateChange", handleMusicStateChange as EventListener);
       if (audioRef.current) {
         audioRef.current.pause();
         audioRef.current.currentTime = 0;
@@ -42,32 +71,17 @@ export const MusicPlayer = () => {
     };
   }, []);
 
-  const toggleMusic = async () => {
-    if (!audioRef.current) return;
-
-    try {
-      if (isPlaying) {
-        audioRef.current.pause();
-        setIsPlaying(false);
-      } else {
-        if (audioContextRef.current?.state === "suspended") {
-          await audioContextRef.current.resume();
-        }
-        await audioRef.current.play();
-        setIsPlaying(true);
-      }
-    } catch (error) {
-      console.error("Music toggle error:", error);
-    }
+  const handleToggleMusic = async () => {
+    await toggleMusic();
   };
 
   return (
     <button
-      onClick={toggleMusic}
+      onClick={handleToggleMusic}
       className="fixed bottom-4 right-4 z-50 p-3 rounded-full bg-gray-900/50 backdrop-blur border border-gray-700 hover:bg-gray-800/50 transition-colors"
       title={isPlaying ? "Mute" : "Play Music"}
     >
-      {isPlaying ? <Volume2 className="w-6 h-6 text-[#4CAF50]" /> : <VolumeX className="w-6 h-6 text-gray-400" />}
+      {!isPlaying ? <VolumeX className="w-6 h-6 text-gray-400" /> : <Volume2 className="w-6 h-6 text-[#4CAF50]" />}
     </button>
   );
 };

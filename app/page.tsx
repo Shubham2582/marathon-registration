@@ -107,7 +107,6 @@ const RegistrationPage = () => {
     }
 
     try {
-      // First, verify the table structure
       const { error: tableError } = await supabase.from("registrations").select("id").limit(1);
 
       if (tableError) {
@@ -145,7 +144,6 @@ const RegistrationPage = () => {
         throw error;
       }
 
-      // Send confirmation email after successful registration
       try {
         const emailData = {
           userData: {
@@ -174,7 +172,6 @@ const RegistrationPage = () => {
         }
       } catch (emailError) {
         console.error("Error sending confirmation email:", emailError);
-        // Don't throw here, as registration was successful
       }
 
       console.log("Registration successful, ID:", data?.[0]?.id);
@@ -202,14 +199,22 @@ const RegistrationPage = () => {
 
   return (
     <div className="relative">
-      <Image
-        src="/Firefly.png"
-        alt="Jungle Background"
-        fill
-        className="w-full object-cover
-        "
-        priority
-      />
+      <Image src="/bg-image.jpeg" alt="Jungle Background" fill className="hidden md:block w-full object-cover" priority />
+
+      {/* <div className="absolute top-8 w-full text-center z-10">
+        <h1
+          className="text-4xl mt-10 md:text-5xl font-bold text-black drop-shadow-[0_2px_2px_rgba(255,255,255,0.5)] 
+          font-serif tracking-wider"
+        >
+          Abujhmad
+        </h1>
+        <h1
+          className="text-4xl md:text-5xl font-bold text-black drop-shadow-[0_2px_2px_rgba(255,255,255,0.5)] 
+          font-serif tracking-wider"
+        >
+          Marathon
+        </h1>
+      </div> */}
 
       <div className="relative min-h-screen flex flex-col items-center justify-center py-12 px-4">
         <div className="w-full max-w-2xl mx-auto mt-32 space-y-5 p-2">

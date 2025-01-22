@@ -5,6 +5,7 @@ import { BambooFrame } from "@/components/ui/bamboo-frame";
 import { useRegistrationStore } from "@/store/useRegistration";
 import { RenderField } from "@/components/render-field";
 import { toast } from "react-hot-toast";
+import { toggleMusic } from "@/components/MusicPlayer";
 
 interface MarathonDetailsFormProps {
   nextStep: () => void;
@@ -19,6 +20,8 @@ const MarathonDetailsForm: React.FC<MarathonDetailsFormProps> = ({ nextStep }) =
   const [otpMethod, setOtpMethod] = useState<"whatsapp" | "email" | null>(null);
   const [generatedOTP, setGeneratedOTP] = useState<string>("");
   const [isOtpVerified, setIsOtpVerified] = useState(false);
+  const [cooldown, setCooldown] = useState(0);
+  const [isSendingOTP, setIsSendingOTP] = useState(false);
 
   const validateMobile = (mobile: string) => {
     return /^[6-9]\d{9}$/.test(mobile);
@@ -28,7 +31,22 @@ const MarathonDetailsForm: React.FC<MarathonDetailsFormProps> = ({ nextStep }) =
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   };
 
+  const startCooldown = () => {
+    setCooldown(30);
+    const timer = setInterval(() => {
+      setCooldown((prev) => {
+        if (prev <= 1) {
+          clearInterval(timer);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+  };
+
   const generateAndSendOTP = async () => {
+    if (cooldown > 0) return;
+    setIsSendingOTP(true);
     try {
       const newOTP = Math.floor(1000 + Math.random() * 9000).toString();
       setGeneratedOTP(newOTP);
@@ -60,9 +78,12 @@ const MarathonDetailsForm: React.FC<MarathonDetailsFormProps> = ({ nextStep }) =
 
       toast.success(`OTP sent to your ${otpMethod === "email" ? "email" : "mobile"}`);
       setShowOtpInput(true);
+      startCooldown();
     } catch (error) {
       toast.error("Failed to send OTP");
       console.error(error);
+    } finally {
+      setIsSendingOTP(false);
     }
   };
 
@@ -73,6 +94,8 @@ const MarathonDetailsForm: React.FC<MarathonDetailsFormProps> = ({ nextStep }) =
         toast.success("OTP verified successfully!");
         setIsOtpVerified(true);
         setShowOtpInput(false);
+        await toggleMusic();
+        nextStep();
       } else {
         toast.error("Invalid OTP");
       }
@@ -84,24 +107,11 @@ const MarathonDetailsForm: React.FC<MarathonDetailsFormProps> = ({ nextStep }) =
     }
   };
 
-  // const onSubmitClick = (e: React.FormEvent) => {
-  //   e.preventDefault();
-  //   if (!showOtpInput) {
-  //     generateAndSendOTP();
-  //   } else {
-  //     verifyOTP();
-  //   }
-  // };
-
   const handleOtpChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const value = e.target.value;
     setForm("otp", value);
     setOtp(value);
   };
-
-  // const getRaceCategories = (gender: "MALE" | "FEMALE") => {
-  //   return gender === "MALE" ? ["10km", "21km"] : ["5km", "10km", "21km"];
-  // };
 
   const handleGenderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const gender = e.target.value as "MALE" | "FEMALE";
@@ -114,19 +124,64 @@ const MarathonDetailsForm: React.FC<MarathonDetailsFormProps> = ({ nextStep }) =
     generateAndSendOTP();
   };
 
-  const handleNextStep = () => {
-    if (!isOtpVerified) {
-      toast.error("Please verify your contact details through OTP first");
-      return;
-    }
-    nextStep();
-  };
+  const renderOTPModal = () => (
+    <div className="bg-gray-900/50 backdrop-blur p-6 rounded-lg border border-gray-700">
+      <RenderField
+        label="Enter OTP / ओटीपी दर्ज करें"
+        name="otp"
+        type="text"
+        placeholder="Enter 4-digit OTP"
+        required
+        onChange={handleOtpChange}
+        errorMessage="Please enter valid OTP"
+      />
+
+      <button
+        type="button"
+        onClick={verifyOTP}
+        disabled={isVerifying}
+        className="w-full mt-4 px-6 py-2 bg-[#4CAF50] text-white text-sm rounded-lg 
+                hover:bg-[#45A049] transition-colors disabled:bg-gray-600"
+      >
+        {isVerifying ? "Verifying..." : "Verify OTP"}
+      </button>
+
+      <button
+        type="button"
+        onClick={generateAndSendOTP}
+        disabled={cooldown > 0 || isSendingOTP}
+        className="w-full mt-3 text-sm text-[#4CAF50] hover:text-[#45A049] disabled:text-gray-500"
+      >
+        {isSendingOTP ? "Sending OTP..." : cooldown > 0 ? `Resend OTP in ${cooldown}s` : "Resend OTP"}
+      </button>
+    </div>
+  );
+
+  const renderSendOTPButtons = () => (
+    <div className="flex gap-4 justify-center mt-4">
+      <button
+        type="button"
+        onClick={() => startOtpProcess("whatsapp")}
+        disabled={!form.mobile || isSendingOTP}
+        className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:bg-gray-600 disabled:cursor-not-allowed"
+      >
+        {isSendingOTP ? "Sending..." : "Send OTP on WhatsApp"}
+      </button>
+      <button
+        type="button"
+        onClick={() => startOtpProcess("email")}
+        disabled={!form.email || isSendingOTP}
+        className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-600 disabled:cursor-not-allowed"
+      >
+        {isSendingOTP ? "Sending..." : "Send OTP on Email"}
+      </button>
+    </div>
+  );
 
   return (
     <BambooFrame>
       <div className="space-y-4">
         <form className="space-y-8">
-          {/* Contact Information */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
               <RenderField
@@ -149,7 +204,6 @@ const MarathonDetailsForm: React.FC<MarathonDetailsFormProps> = ({ nextStep }) =
               />
             </div>
 
-            {/* Gender selection - Updated UI */}
             <div className="col-span-2">
               <div className="space-y-2">
                 <label className="block text-white text-sm font-medium mb-2">Gender / लिंग *</label>
@@ -181,7 +235,6 @@ const MarathonDetailsForm: React.FC<MarathonDetailsFormProps> = ({ nextStep }) =
             </div>
           </div>
 
-          {/* Add Bastar Checkbox */}
           <div className="space-y-2">
             <label className="flex items-center space-x-2">
               <input
@@ -205,57 +258,13 @@ const MarathonDetailsForm: React.FC<MarathonDetailsFormProps> = ({ nextStep }) =
                   <div className="absolute right-2 top-2">
                     <button onClick={() => setShowOtpInput(false)} className="text-gray-400 hover:text-white"></button>
                   </div>
-
-                  <div className="bg-gray-900/50 backdrop-blur p-6 rounded-lg border border-gray-700">
-                    <RenderField
-                      label="Enter OTP / ओटीपी दर्ज करें"
-                      name="otp"
-                      type="text"
-                      placeholder="Enter 4-digit OTP"
-                      required
-                      onChange={handleOtpChange}
-                      errorMessage="Please enter valid OTP"
-                    />
-
-                    <button
-                      type="button"
-                      onClick={verifyOTP}
-                      disabled={isVerifying}
-                      className="w-full mt-4 px-6 py-2 bg-[#4CAF50] text-white text-sm rounded-lg 
-                     hover:bg-[#45A049] transition-colors disabled:bg-gray-600"
-                    >
-                      {isVerifying ? "Verifying..." : "Verify OTP"}
-                    </button>
-
-                    <button type="button" onClick={generateAndSendOTP} className="w-full mt-3 text-sm text-[#4CAF50] hover:text-[#45A049]">
-                      Resend OTP
-                    </button>
-                  </div>
+                  {renderOTPModal()}
                 </div>
               </BambooFrame>
             </div>
           </div>
 
-          {!showOtpInput && (
-            <div className="flex gap-4 justify-center mt-4">
-              <button
-                type="button"
-                onClick={() => startOtpProcess("whatsapp")}
-                disabled={!form.mobile}
-                className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:bg-gray-600 disabled:cursor-not-allowed"
-              >
-                Send OTP on WhatsApp
-              </button>
-              <button
-                type="button"
-                onClick={() => startOtpProcess("email")}
-                disabled={!form.email}
-                className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-600 disabled:cursor-not-allowed"
-              >
-                Send OTP on Email
-              </button>
-            </div>
-          )}
+          {!showOtpInput && renderSendOTPButtons()}
 
           {showOtpInput && (
             <p className="text-center text-sm text-gray-300 mb-4">
@@ -263,18 +272,13 @@ const MarathonDetailsForm: React.FC<MarathonDetailsFormProps> = ({ nextStep }) =
             </p>
           )}
 
-          <div className="flex justify-end pt-6">
-            <button
-              type="button"
-              onClick={handleNextStep}
-              className={`px-6 py-2 h-fit ${
-                isOtpVerified ? "bg-[#4CAF50] hover:bg-[#45A049]" : "bg-gray-400 cursor-not-allowed"
-              } text-white text-sm rounded-lg transition-colors`}
-              disabled={!isOtpVerified}
-            >
-              {isOtpVerified ? "Next Step" : "Verify OTP to Continue"}
-            </button>
-          </div>
+          {!isOtpVerified && (
+            <div className="flex justify-end pt-6">
+              <button onClick={toggleMusic} type="button" className="px-6 py-2 h-fit bg-gray-400 cursor-not-allowed text-white text-sm rounded-lg" disabled>
+                Verify OTP to Continue
+              </button>
+            </div>
+          )}
         </form>
       </div>
     </BambooFrame>
