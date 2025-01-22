@@ -13,9 +13,7 @@ interface MarathonDetailsFormProps {
   handleSubmit?: (e: React.FormEvent) => Promise<void>;
 }
 
-const MarathonDetailsForm: React.FC<MarathonDetailsFormProps> = ({
-  nextStep,
-}) => {
+const MarathonDetailsForm: React.FC<MarathonDetailsFormProps> = ({ nextStep }) => {
   const { form, setForm } = useRegistrationStore();
   const [showOtpInput, setShowOtpInput] = useState(false);
   const [otp, setOtp] = useState("");
@@ -79,9 +77,7 @@ const MarathonDetailsForm: React.FC<MarathonDetailsFormProps> = ({
         throw new Error("Failed to send OTP email");
       }
 
-      toast.success(
-        `OTP sent to your ${otpMethod === "email" ? "email" : "mobile"}`
-      );
+      toast.success(`OTP sent to your ${otpMethod === "email" ? "email" : "mobile"}`);
       setShowOtpInput(true);
       startCooldown();
     } catch (error) {
@@ -112,9 +108,7 @@ const MarathonDetailsForm: React.FC<MarathonDetailsFormProps> = ({
     }
   };
 
-  const handleOtpChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
+  const handleOtpChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const value = e.target.value;
     setForm("otp", value);
     setOtp(value);
@@ -209,9 +203,7 @@ const MarathonDetailsForm: React.FC<MarathonDetailsFormProps> = ({
             />
 
             <div className="col-span-2">
-              <label className="block text-white md:text-sm text-xs font-medium mb-2">
-                Gender / लिंग *
-              </label>
+              <label className="block text-white md:text-sm text-xs font-medium mb-2">Gender / लिंग *</label>
               <div className="flex md:gap-8 gap-4">
                 <label className="flex items-center">
                   <input
@@ -222,9 +214,7 @@ const MarathonDetailsForm: React.FC<MarathonDetailsFormProps> = ({
                     onChange={handleGenderChange}
                     className="mr-2 text-[#4CAF50] focus:ring-[#4CAF50]"
                   />
-                  <span className="text-white md:text-sm text-xs whitespace-nowrap">
-                    Male / पुरुष
-                  </span>
+                  <span className="text-white md:text-sm text-xs whitespace-nowrap">Male / पुरुष</span>
                 </label>
                 <label className="flex items-center">
                   <input
@@ -235,9 +225,7 @@ const MarathonDetailsForm: React.FC<MarathonDetailsFormProps> = ({
                     onChange={handleGenderChange}
                     className="mr-2 text-[#4CAF50] focus:ring-[#4CAF50]"
                   />
-                  <span className="text-white md:text-sm text-xs whitespace-nowrap">
-                    Female / महिला
-                  </span>
+                  <span className="text-white md:text-sm text-xs whitespace-nowrap">Female / महिला</span>
                 </label>
               </div>
             </div>
@@ -251,98 +239,32 @@ const MarathonDetailsForm: React.FC<MarathonDetailsFormProps> = ({
               onChange={(e) => setForm("isFromBastar", e.target.checked)}
               className="rounded text-[#4CAF50] focus:ring-[#4CAF50]"
             />
-            <span className="text-white md:text-sm text-xs">
-              Are you from Bastar? / क्या आप बस्तर से हैं?
-            </span>
+            <span className="text-white md:text-sm text-xs">Are you from Bastar? / क्या आप बस्तर से हैं?</span>
           </label>
 
           <div
             className={cn(
               "absolute w-screen h-screen flex items-center justify-center -top-24 left-0 bg-black/40 backdrop-blur",
-              showOtpInput
-                ? "opacity-100 translate-y-0"
-                : "opacity-0 -translate-y-full pointer-events-none"
+              showOtpInput ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-full pointer-events-none"
             )}
           >
-            <div
-              className={`inset-0 transform transition-all  duration-300 ${
-                showOtpInput
-                  ? "opacity-100 translate-y-0"
-                  : "opacity-0 -translate-y-full pointer-events-none"
-              }`}
-            >
-              <div className="mx-auto px-4">
-                <BambooFrame>
-                  <div className="relative space-y-4">
-                    <div className="absolute right-2 top-2">
-                      <button
-                        onClick={() => setShowOtpInput(false)}
-                        className="text-gray-400 hover:text-white"
-                      ></button>
-                    </div>
-
-                    <div className="bg-gray-900/50 backdrop-blur p-6 rounded-lg border border-gray-700">
-                      <RenderField
-                        label="Enter OTP / ओटीपी दर्ज करें"
-                        name="otp"
-                        type="text"
-                        placeholder="Enter 4-digit OTP"
-                        required
-                        onChange={handleOtpChange}
-                        errorMessage="Please enter valid OTP"
-                      />
-
-                      <button
-                        type="button"
-                        onClick={verifyOTP}
-                        disabled={isVerifying}
-                        className="w-full mt-4 px-10 md:py-2 py-1.5 bg-[#4CAF50] text-white md:text-sm text-xs rounded-lg 
-                        hover:bg-[#45A049] transition-colors disabled:bg-gray-600"
-                      >
-                        {isVerifying ? "Verifying..." : "Verify OTP"}
-                      </button>
-
-                      <button
-                        type="button"
-                        onClick={generateAndSendOTP}
-                        className="w-full mt-3 md:text-sm text-xs text-[#4CAF50] hover:text-[#45A049]"
-                      >
-                        Resend OTP
-                      </button>
-                    </div>
+            <div className="mx-auto px-4">
+              <BambooFrame>
+                <div className="relative space-y-4">
+                  <div className="absolute right-2 top-2">
+                    <button onClick={() => setShowOtpInput(false)} className="text-gray-400 hover:text-white" />
                   </div>
-                </BambooFrame>
-              </div>
+                  {renderOTPModal()}
+                </div>
+              </BambooFrame>
             </div>
           </div>
 
-          {!showOtpInput && (
-            <div className="flex gap-4 justify-center mt-4">
-              <button
-                type="button"
-                onClick={() => startOtpProcess("whatsapp")}
-                disabled={!form.mobile}
-                className="md:px-6 md:py-2 px-3 py-1 md:text-base text-sm bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:bg-gray-600 disabled:cursor-not-allowed"
-              >
-                Send OTP on WhatsApp
-              </button>
-              <button
-                type="button"
-                onClick={() => startOtpProcess("email")}
-                disabled={!form.email}
-                className="md:px-6 md:py-2 px-4 py-1 md:text-base text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-600 disabled:cursor-not-allowed"
-              >
-                Send OTP on Email
-              </button>
-            </div>
-          )}
+          {!showOtpInput && renderSendOTPButtons()}
 
           {showOtpInput && (
             <p className="text-center md:text-sm text-xs text-gray-300 mb-4">
-              OTP sent via{" "}
-              {otpMethod === "whatsapp"
-                ? `WhatsApp (${form.mobile})`
-                : `Email (${form.email})`}
+              OTP sent via {otpMethod === "whatsapp" ? `WhatsApp (${form.mobile})` : `Email (${form.email})`}
             </p>
           )}
 

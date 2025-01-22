@@ -137,10 +137,7 @@ const RegistrationPage = () => {
 
       console.log("Sending data to Supabase:", registrationData);
 
-      const { data, error } = await supabase
-        .from("registrations")
-        .insert([registrationData])
-        .select("id");
+      const { data, error } = await supabase.from("registrations").insert([registrationData]).select("id");
 
       if (error) {
         console.error("Supabase insertion error:", error);
@@ -178,15 +175,11 @@ const RegistrationPage = () => {
       }
 
       console.log("Registration successful, ID:", data?.[0]?.id);
-      toast.success(
-        "Registration successful! Check your email for confirmation."
-      );
+      toast.success("Registration successful! Check your email for confirmation.");
       router.push("/registration/success");
     } catch (error) {
       console.error("Full error object:", error);
-      toast.error(
-        error instanceof Error ? error.message : "Registration failed"
-      );
+      toast.error(error instanceof Error ? error.message : "Registration failed");
     }
   };
 
@@ -198,12 +191,7 @@ const RegistrationPage = () => {
       case 1:
         return <MarathonDetailsForm nextStep={nextStep} />;
       case 2:
-        return (
-          <PersonalInformationForm
-            prevStep={prevStep}
-            handleSubmit={handleSubmit}
-          />
-        );
+        return <PersonalInformationForm prevStep={prevStep} handleSubmit={handleSubmit} />;
       default:
         return null;
     }
@@ -211,30 +199,11 @@ const RegistrationPage = () => {
 
   return (
     <div className="relative pt-20">
-      <Image
-        src="/Firefly.png"
-        alt="Jungle Background"
-        fill
-        className="absolute w-screen min-h-screen object-cover md:block hidden"
-        priority
-      />
-      <Image
-        src="/mobile/background.png"
-        alt="Jungle Background"
-        fill
-        className="absolute w-screen h-screen top-0 object-cover block md:hidden"
-        priority
-      />
+      <Image src="/bg-image.jpeg" alt="Jungle Background" fill className="absolute w-screen min-h-screen object-cover md:block hidden" priority />
+      <Image src="/mobile/background.png" alt="Jungle Background" fill className="absolute w-screen h-screen top-0 object-cover block md:hidden" priority />
 
       <div className="relative md:w-full mx-auto flex flex-col flex-grow items-center justify-center md:px-4 sm:px-12">
-        <Image
-          src="/mobile/box.png"
-          height={700}
-          width={400}
-          alt="Box"
-          className="absolute w-full h-full object-cover object-top block md:hidden"
-          priority
-        />
+        <Image src="/mobile/box.png" height={700} width={400} alt="Box" className="absolute w-full h-full object-cover object-top block md:hidden" priority />
         <div className="relative h-36 w-2/3 z-10 sm:mt-10 mt-7 flex justify-center items-center">
           <Image
             src="/mobile/header-background.png"
@@ -244,31 +213,23 @@ const RegistrationPage = () => {
             className="absolute w-full h-full object-contain block md:hidden"
             priority
           />
-          <h2 className="z-10 md:hidden sm:text-3xl text-2xl font-bold text-center text-white">Abujmaad<br/>Registration</h2>
+          <h2 className="z-10 md:hidden sm:text-3xl text-2xl font-bold text-center text-white">
+            Abujmaad
+            <br />
+            Registration
+          </h2>
         </div>
 
         <div className="w-full max-w-2xl mx-auto md:mt- space-y-5 p-2 z-10">
           <div className="flex justify-between p-4 w-full rounded-xl md:bg-gray-900/50 md:backdrop-blur">
             {[1, 2].map((i) => (
               <div key={i} className="flex items-center">
-                <div
-                  className={`w-10 h-10 rounded-full ${
-                    step >= i ? "bg-[#4CAF50]" : "bg-gray-600"
-                  } flex items-center justify-center`}
-                >
+                <div className={`w-10 h-10 rounded-full ${step >= i ? "bg-[#4CAF50]" : "bg-gray-600"} flex items-center justify-center`}>
                   <span className="text-lg font-semibold text-white">{i}</span>
                 </div>
                 <div className="ml-4">
-                  <p
-                    className={`${
-                      step >= i ? "text-[#4CAF50]" : "text-gray-400"
-                    } font-bold`}
-                  >
-                    Step {i}
-                  </p>
-                  <p className="text-sm text-gray-300">
-                    {i === 1 ? "Race Details" : "Personal Details"}
-                  </p>
+                  <p className={`${step >= i ? "text-[#4CAF50]" : "text-gray-400"} font-bold`}>Step {i}</p>
+                  <p className="text-sm text-gray-300">{i === 1 ? "Race Details" : "Personal Details"}</p>
                 </div>
               </div>
             ))}

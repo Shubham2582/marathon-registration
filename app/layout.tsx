@@ -1,8 +1,7 @@
-import type { Metadata } from "next";
+import { Metadata } from "next";
 import { Inter } from "next/font/google";
-import { MusicPlayer } from "@/components/MusicPlayer";
 import "./globals.css";
-import { WatchingOwl } from "@/components/WatchingOwl";
+import { MusicPlayer } from "@/components/MusicPlayer";
 
 const inter = Inter({
   variable: "--font-inter",
