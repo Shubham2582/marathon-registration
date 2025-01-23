@@ -198,8 +198,8 @@ const RegistrationPage = () => {
   };
 
   return (
-    <div className="relative pt-20">
-      <Image src="/bg-image.jpeg" alt="Jungle Background" fill className="absolute w-screen min-h-screen object-cover md:block hidden" priority />
+    <div className="relative">
+      <Image src="/bg-image.jpg" alt="Jungle Background" fill className="absolute w-screen min-h-screen object-cover md:block hidden" priority />
       <Image src="/mobile/background.png" alt="Jungle Background" fill className="absolute w-screen h-screen top-0 object-cover block md:hidden" priority />
 
       <div className="relative md:w-full mx-auto flex flex-col flex-grow items-center justify-center md:px-4 sm:px-12">

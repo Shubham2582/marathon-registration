@@ -14,7 +14,7 @@ export default function RegistrationSuccess() {
 
   return (
     <div className="min-h-screen relative">
-      <Image src="/bg-image.jpeg" alt="Jungle Background" fill className="absolute w-screen min-h-screen object-cover md:block hidden" priority />
+      <Image src="/bg-image.jpg" alt="Jungle Background" fill className="absolute w-screen min-h-screen object-cover md:block hidden" priority />
       <Image src="/mobile/background.png" alt="Jungle Background" fill className="absolute w-screen h-screen top-0 object-cover block md:hidden" priority />
 
       <div className="relative min-h-screen flex items-center justify-center">

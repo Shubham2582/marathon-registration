@@ -29,7 +29,6 @@ const transporter = nodemailer.createTransport({
 });
 
 const getEmailTemplate = (userData: EmailUserData) => {
-  // Check if this is an OTP email
   if (userData.marathon_details.otp) {
     return `
       <div style="font-family: Arial, sans-serif; padding: 20px; max-width: 600px; margin: 0 auto;">
@@ -48,43 +47,29 @@ const getEmailTemplate = (userData: EmailUserData) => {
     `;
   }
 
-  // Return the original registration confirmation template
   return `
-
-
-
-  
-    body { font-family: Arial, sans-serif; line-height: 1.6; }
-    .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-    .header { background-color: #4CAF50; color: white; padding: 20px; text-align: center; }
-    .content { padding: 20px; }
-    .footer { text-align: center; padding: 20px; color: #666; }
-  
-
-
-  
-    
-      Registration Confirmation - Abujhmad Marathon 2025
-    
-    
-      Dear ${userData.personal_info.firstName} ${userData.personal_info.lastName},
-      Thank you for registering for the Abujhmad Marathon 2025! Your registration has been successfully completed.
-      
-      Registration Details:
-      Race Category: ${userData.marathon_details.raceCategory}
-      T-Shirt Size: ${userData.marathon_details.tShirtSize}
-      
-      We will send you further details about the race day schedule and requirements closer to the event date.
-      
-      If you have any questions, please don't hesitate to contact us.
-    
-    
-      Best regards,Team Abujhmad Marathon 2025
-    
-  
-
-
-`;
+      <body style="margin: 0; padding: 0; font-family: Arial, sans-serif; line-height: 1.6; background-color: #f4f4f4;">
+        <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
+          <div style="background-color: #4CAF50; color: white; padding: 20px; text-align: center;">
+            <h1 style="margin: 0; font-size: 24px;">Abujhmad Marathon 2025</h1>
+            <p style="margin: 10px 0 0 0;">Registration Confirmation</p>
+          </div>
+          <div style="padding: 20px;">
+            <p>Dear ${userData.personal_info.firstName} ${userData.personal_info.lastName},</p>
+            <p>Thank you for registering for the Abujhmad Marathon 2025! Your registration has been successfully completed.</p>
+            <p><strong>Registration Details:</strong></p>
+            <ul style="list-style-type: none; padding: 0;">
+              <li><strong>Race Category:</strong> ${userData.marathon_details.raceCategory}</li>
+              <li><strong>T-Shirt Size:</strong> ${userData.marathon_details.tShirtSize}</li>
+            </ul>
+            <p>We will send you further details about the race day schedule and requirements closer to the event date.</p>
+            <p>If you have any questions, please don't hesitate to contact us.</p>
+          </div>
+          <div style="text-align: center; padding: 20px; color: #666;">
+            <p>Best regards,<br>Team Abujhmad Marathon 2025</p>
+          </div>
+        </div>
+  `;
 };
 
 export async function POST(request: Request) {
