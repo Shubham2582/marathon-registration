@@ -135,8 +135,6 @@ const RegistrationPage = () => {
         needs_accommodation: form.needsAccommodation,
       };
 
-      console.log("Sending data to Supabase:", registrationData);
-
       const { data, error } = await supabase.from("registrations").insert([registrationData]).select("id");
 
       if (error) {
@@ -174,7 +172,6 @@ const RegistrationPage = () => {
         console.error("Error sending confirmation email:", emailError);
       }
 
-      console.log("Registration successful, ID:", data?.[0]?.id);
       toast.success("Registration successful! Check your email for confirmation.");
       router.push("/registration/success");
     } catch (error) {
